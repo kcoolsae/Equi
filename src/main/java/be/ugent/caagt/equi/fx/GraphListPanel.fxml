@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<fx:root type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+         stylesheets="@graphlistpanel.css"
+         fx:controller="be.ugent.caagt.equi.fx.GraphListPanelCompanion">
+    <children>
+        <TableView fx:id="tableView" prefHeight="200.0" VBox.vgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml">
+            <columns>
+                <TableColumn fx:id="nameColumn" prefWidth="300.0" text="Name"/>
+                <TableColumn fx:id="orderColumn" minWidth="0.0" prefWidth="50.0" text="V"/>
+                <TableColumn fx:id="sizeColumn" prefWidth="50.0" text="E"/>
+                <TableColumn fx:id="facesColumn" prefWidth="50.0" text="F"/>
+            </columns>
+            <placeholder>
+              <Label id="placeholder" text="&lt;Drag .w3d files here&gt;" />
+            </placeholder>
+        </TableView>
+        <HBox alignment="CENTER" VBox.vgrow="NEVER">
+            <Button onAction="#doButton" mnemonicParsing="false" text="Show Selected"/>
+        </HBox>
+    </children>
+</fx:root>

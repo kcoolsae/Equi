@@ -1,0 +1,23 @@
+.label.caption {
+  -fx-min-width: 100;
+}
+
+.label.number {
+  -fx-font-weight: bold;
+  -fx-text-alignment: right;
+  -fx-min-width: 50;
+}
+
+.group .label {
+  -fx-min-width: 70;
+}
+
+HBox {
+  -fx-alignment: center-left;
+  -fx-spacing: 10;
+  -fx-padding: 5;
+}
+
+.toggle-button:selected {
+  -fx-font-weight: bold;
+}

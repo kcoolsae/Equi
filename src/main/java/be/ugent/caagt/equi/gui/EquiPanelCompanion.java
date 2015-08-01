@@ -1,0 +1,231 @@
+/* EquiPanelCompanion.java
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Copyright Ⓒ 2015 Universiteit Gent
+ * 
+ * This file is part of the Equi application
+ * 
+ * Corresponding author (see also file AUTHORS)
+ * 
+ * Kris Coolsaet
+ * Department of Applied Mathematics, Computer Science and Statistics
+ * Ghent University 
+ * Krijgslaan 281-S9
+ * B-9000 GENT Belgium
+ * 
+ * The Equi application is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * The Degage Web Application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the Degage Web Application (file LICENSE in the
+ * distribution).  If not, see http://www.gnu.org/licenses/.
+ */
+
+package be.ugent.caagt.equi.gui;
+
+import be.ugent.caagt.equi.EmbeddedPlanarGraph;
+import be.ugent.caagt.equi.engine.PlanarizationEngine;
+import be.ugent.caagt.equi.fx.Polyhedron;
+import be.ugent.caagt.equi.groups.ExtendedGroup;
+import be.ugent.caagt.equi.groups.Symmetries;
+import be.ugent.caagt.equi.PlanarGraph;
+import be.ugent.caagt.equi.groups.Realization;
+import be.ugent.caagt.equi.groups.PointGroup3D;
+import be.ugent.caagt.equi.fx.SimpleGraphView3D;
+import javafx.geometry.Point3D;
+import javafx.scene.control.Label;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Companion class for {@code EquiPanel.fxml}
+ */
+public class EquiPanelCompanion {
+
+    public Label nrOfVertices;
+
+    public Label nrOfEdges;
+
+    public Label nrOfFaces;
+
+    public VBox groupPane;
+
+    public SimpleGraphView3D view3D;
+
+
+    private PlanarizationEngine engine;
+
+    private Stage stage;
+
+    public Save3DDialog saveDialog;
+
+    public Label accuracy;
+
+    private PlanarGraph graph;
+
+    private Realization realization;
+
+    public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
+        this.graph = symmetries.getGraph();
+        this.realization = symmetries.getRealization();
+        this.stage = stage;
+    }
+
+    public void initialize() {
+        nrOfVertices.setText(Integer.toString(graph.getOrder()));
+        nrOfEdges.setText(Integer.toString(graph.getSize()));
+        nrOfFaces.setText(Integer.toString(graph.getNumberOfFaces()));
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        for (Realization subrel : realization.getGroup().getSubgroupRealizations(realization)) {
+            HBox hbox = new HBox();
+            Label caption = new Label(subrel.getGroup().toString());
+            hbox.getChildren().add(caption);
+            for (PointGroup3D pointGroup3D : subrel.getGroup().getPointGroups()) {
+                ToggleButton button = new SelectGroupButton(
+                        pointGroup3D.getCaption(),
+                        pointGroup3D.getCorrespondence().createExtendedGroup(subrel)
+                );
+                hbox.getChildren().add(button);
+                button.setToggleGroup(toggleGroup);
+            }
+            hbox.getStyleClass().add("group");
+            groupPane.getChildren().add(hbox);
+        }
+        // add button for trivial group
+        HBox hbox = new HBox();
+        ToggleButton c1Button = new SelectGroupButton();
+        c1Button.setToggleGroup(toggleGroup);
+        hbox.getChildren().addAll(
+                new Label("C1"),
+                c1Button
+        );
+        c1Button.setSelected(true);
+        hbox.getStyleClass().add("group");
+        groupPane.getChildren().add(hbox);
+
+        toggleGroup.selectedToggleProperty().addListener(ev -> {
+                    Toggle toggle = toggleGroup.getSelectedToggle();
+                    if (toggle == null) {
+                        c1Button.setSelected(true);
+                        c1Button.requestFocus();
+                    } else {
+                        engine.setGroup(((SelectGroupButton) toggle).getGroup());
+                    }
+                }
+        );
+
+        // start with the trivial group
+        ExtendedGroup grp = new ExtendedGroup();
+        this.engine = new PlanarizationEngine(graph);
+        engine.setGroup(grp);
+        this.saveDialog = new Save3DDialog(stage);
+
+        //
+        showPolyhedron();
+    }
+
+    public void showPolyhedron() {
+        double[][] coordinates = engine.getCoordinates();
+        List<Point3D> vertices = new ArrayList<>();
+        for (double[] coordinate : coordinates) {
+            vertices.add(new Point3D(
+                    coordinate[0],
+                    coordinate[1],
+                    coordinate[2]));
+        }
+        Polyhedron poly = new Polyhedron();
+        poly.addVertices(Color.LIGHTSALMON, vertices);
+        graph.sweepEdges(
+                edge -> poly.addEdge(
+                        Color.WHITE,
+                        vertices.get(edge[0]),
+                        vertices.get(edge[1])
+                )
+        );
+
+        view3D.reset();
+        view3D.add(poly);
+        accuracy.setText(String.format("% 7.5g", engine.computeAccuracy()));
+    }
+
+
+    public void doRandom() {
+        engine.randomPerturbation(0.2);
+        showPolyhedron();
+    }
+
+    public void doRandomLarge() {
+        engine.initRandomCoordinates();
+        engine.randomPerturbation(5.0);
+        showPolyhedron();
+    }
+
+    public void doSingleStep() {
+        engine.singleStep();
+        showPolyhedron();
+    }
+
+    public void doRun() {
+        engine.timedStep(2000L);
+        showPolyhedron();
+    }
+
+    public void doLongRun() {
+        engine.timedStep(15000L);
+        showPolyhedron();
+    }
+
+    public void doInflate() {
+        engine.rescale(1.5);
+        showPolyhedron();
+    }
+
+
+    public void doSkew() {
+        engine.skew();
+        showPolyhedron();
+    }
+
+    public void doSymmetrize() {
+        engine.symmetrize();
+        showPolyhedron();
+    }
+
+    public void doSphere() {
+        engine.onSphere();
+        showPolyhedron();
+    }
+
+    /**
+     * Export the current solution as a planar graph.
+     */
+    private EmbeddedPlanarGraph exportGraph() {
+        double[][] coordinates = engine.getCoordinates();
+        return new EmbeddedPlanarGraph(graph, coordinates);
+    }
+
+
+    public void doSave() {
+        saveDialog.save(exportGraph(), Save3DDialog.OutputType.WRITE_GRAPH);
+    }
+
+    public void doSaveSpinput(){
+        saveDialog.save(exportGraph(), Save3DDialog.OutputType.SPINPUT);
+    }
+
+}

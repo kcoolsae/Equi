@@ -1,0 +1,16 @@
+The Equi Application is Copyright Ⓒ 2015 Universiteit Gent
+
+Currently the sole software developer for this project is
+
+  Kris Coolsaet
+  Department of Applied Mathematics, Computer Science and Statistics
+  Ghent University
+  Krijgslaan 281-S9
+  B-9000 GENT Belgium
+
+The program was developed in cooperation with Stan Schein (UCLA - USA) who made many
+valuable comments and suggestions.
+
+Parts of the code related to planar graphs were based on code written by
+Nico Van Cleemput (Universiteit Gent - Belgium) as part of the CaGe project
+(see https://github.com/CaGe-graph/CaGe )

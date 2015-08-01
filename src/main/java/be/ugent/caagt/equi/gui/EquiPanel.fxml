@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import be.ugent.caagt.equi.fx.SimpleGraphView3D?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="-1.0" prefWidth="-1.0" stylesheets="@equi.css"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <left>
+        <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@equi.css">
+            <TitledPane animated="false" text="Graph Properties">
+                <VBox prefWidth="500.0">
+                    <HBox>
+                        <Label styleClass="caption" text="Nr. Vertices"/>
+                        <Label styleClass="number" fx:id="nrOfVertices" text="??"/>
+                    </HBox>
+                    <HBox>
+                        <Label styleClass="caption" text="Nr. Edges"/>
+                        <Label styleClass="number" fx:id="nrOfEdges" text="??"/>
+                    </HBox>
+                    <HBox>
+                        <Label styleClass="caption" text="Nr. Faces"/>
+                        <Label styleClass="number" fx:id="nrOfFaces" text="??"/>
+                    </HBox>
+                    <HBox>
+                        <Label styleClass="caption" text="Accuracy"/>
+                        <Label styleClass="number" fx:id="accuracy" text="??"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+            <TitledPane text="Symmetry groups">
+                <VBox fx:id="groupPane" prefWidth="500.0">
+                </VBox>
+            </TitledPane>
+            <TitledPane text="Commands">
+                <VBox>
+                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                        <Button mnemonicParsing="false" text="Random" onAction="#doRandomLarge"/>
+                        <Button mnemonicParsing="false" text="Perturb" onAction="#doRandom"/>
+                        <Button mnemonicParsing="false" text="Inflate" onAction="#doInflate"/>
+                        <Button mnemonicParsing="false" text="Skew" onAction="#doSkew"/>
+                        <Button mnemonicParsing="false" text="Sphere" onAction="#doSphere"/>
+                    </HBox>
+                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                        <Button mnemonicParsing="false" text="Run" onAction="#doRun"/>
+                        <Button mnemonicParsing="false" text="Long" onAction="#doLongRun"/>
+                        <Button mnemonicParsing="false" text="Step" onAction="#doSingleStep"/>
+                        <Button mnemonicParsing="false" text="Symmetrize" onAction="#doSymmetrize"/>
+                    </HBox>
+                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                        <Button mnemonicParsing="false" text="Save (w3d)" onAction="#doSave"/>
+                        <Button mnemonicParsing="false" text="Save (spinput)" onAction="#doSaveSpinput"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+        </VBox>
+    </left>
+    <center>
+        <SimpleGraphView3D fx:id="view3D" BorderPane.alignment="CENTER">
+        </SimpleGraphView3D>
+    </center>
+</BorderPane>
