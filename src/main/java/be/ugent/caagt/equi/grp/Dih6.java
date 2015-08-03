@@ -1,4 +1,4 @@
-/* DoubleDihedral.java
+/* Dih6.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -17,14 +17,14 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * The Degage Web Application is distributed in the hope that it will be useful,
+ * The Equi Application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  * 
  * You should have received a copy of the GNU Affero General Public License
- * along with the Degage Web Application (file LICENSE in the
- * distribution).  If not, see http://www.gnu.org/licenses/.
+ * along with the Equi Application (file LICENSE in the distribution).  If not,
+ * see http://www.gnu.org/licenses/.
  */
 
 package be.ugent.caagt.equi.grp;
