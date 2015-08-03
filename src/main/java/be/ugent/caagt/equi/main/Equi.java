@@ -30,6 +30,7 @@
 package be.ugent.caagt.equi.main;
 
 import be.ugent.caagt.equi.gui.MainPanel;
+import be.ugent.caagt.fxlogwindow.LoggingWindow;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -45,7 +46,9 @@ public class Equi extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        stage.show();
+
+        new LoggingWindow ("Error log");
+
         stage.setScene(new Scene(new MainPanel(stage)));
         stage.setTitle("Equi - equilateral embedding of polyhedra");
         stage.show();

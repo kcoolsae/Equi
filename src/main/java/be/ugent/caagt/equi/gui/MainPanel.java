@@ -41,6 +41,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Contents of the main window of the application. Contains a graph list panel and some menus.
@@ -61,6 +63,7 @@ public class MainPanel extends BorderPane {
             window.setTitle(symmetries.getGraph().getName());
             window.show();
         } catch (IOException e) {
+            Logger.getLogger("be.ugent.caagt.equi").log(Level.SEVERE, "Could not create window", e);
             throw new RuntimeException("Could not create window", e);
         }
     }

@@ -34,6 +34,8 @@ import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Graph input stream which can read write graph formats
@@ -67,7 +69,7 @@ public class WriteGraphInputStream extends GraphInputStream {
             }
         } catch (UnsupportedEncodingException e) {
             // this should not happen
-            throw new RuntimeException("US-ASCII encoding not supported by JRE ??");
+            Logger.getLogger("be.ugent.caagt.equi").log(Level.SEVERE, "US-ASCII encoding not supported by JRE", e);
         }
 
     }

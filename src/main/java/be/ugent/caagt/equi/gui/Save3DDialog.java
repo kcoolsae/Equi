@@ -39,6 +39,8 @@ import javafx.stage.Window;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides a dialog for saving/reading a planar graph to a writegraph3D or a spinput file
@@ -101,7 +103,7 @@ public class Save3DDialog {
                 gos.writeGraph(graph);
                 lastFile = file;
             } catch (IOException e) {
-                // should signal error
+                Logger.getLogger("be.ugent.caagt.equi").log(Level.SEVERE, "Could not save file", e);
             }
         }
     }

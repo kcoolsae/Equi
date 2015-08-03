@@ -45,6 +45,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Panel displays a list of graphs (loaded from file) and allows to select one.
@@ -60,6 +62,7 @@ public class GraphListPanel extends VBox {
             loader.load();
             companion = loader.getController();
         } catch (IOException ex) {
+            Logger.getLogger("be.ugent.caagt.equi").log (Level.SEVERE, "Could not create panel", ex);
             throw new RuntimeException("Could not read FXML file", ex);
         }
 
@@ -128,7 +131,7 @@ public class GraphListPanel extends VBox {
                 firstGraph.setName(fileName); // remove suffix if there was only one graph in the file
             }
         } catch (IOException e) {
-            // should signal error
+            Logger.getLogger("be.ugent.caagt.equi").log(Level.SEVERE, "Error while reading file", e);
         }
     }
 
