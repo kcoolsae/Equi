@@ -32,11 +32,10 @@ package be.ugent.caagt.equi.gui;
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import be.ugent.caagt.equi.engine.PlanarizationEngine;
 import be.ugent.caagt.equi.fx.Polyhedron;
-import be.ugent.caagt.equi.groups.ExtendedGroup;
-import be.ugent.caagt.equi.groups.Symmetries;
+import be.ugent.caagt.equi.grp.CombinatorialGroup;
+import be.ugent.caagt.equi.grp.CombinedGroup;
+import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
-import be.ugent.caagt.equi.groups.Realization;
-import be.ugent.caagt.equi.groups.PointGroup3D;
 import be.ugent.caagt.equi.fx.SimpleGraphView3D;
 import javafx.geometry.Point3D;
 import javafx.scene.control.Label;
@@ -77,11 +76,11 @@ public class EquiPanelCompanion {
 
     private PlanarGraph graph;
 
-    private Realization realization;
+    private CombinatorialGroup group;
 
     public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
         this.graph = symmetries.getGraph();
-        this.realization = symmetries.getRealization();
+        this.group = symmetries.getGroup();
         this.stage = stage;
     }
 
@@ -91,15 +90,12 @@ public class EquiPanelCompanion {
         nrOfFaces.setText(Integer.toString(graph.getNumberOfFaces()));
 
         ToggleGroup toggleGroup = new ToggleGroup();
-        for (Realization subrel : realization.getGroup().getSubgroupRealizations(realization)) {
+        for (CombinatorialGroup subgroup : group.getSubgroups()) {
             HBox hbox = new HBox();
-            Label caption = new Label(subrel.getGroup().toString());
+            Label caption = new Label(subgroup.toString());
             hbox.getChildren().add(caption);
-            for (PointGroup3D pointGroup3D : subrel.getGroup().getPointGroups()) {
-                ToggleButton button = new SelectGroupButton(
-                        pointGroup3D.getCaption(),
-                        pointGroup3D.getCorrespondence().createExtendedGroup(subrel)
-                );
+            for (CombinedGroup pointGroup : subgroup.getPointGroups()) {
+                ToggleButton button = new SelectGroupButton( pointGroup );
                 hbox.getChildren().add(button);
                 button.setToggleGroup(toggleGroup);
             }
@@ -130,7 +126,7 @@ public class EquiPanelCompanion {
         );
 
         // start with the trivial group
-        ExtendedGroup grp = new ExtendedGroup();
+        CombinedGroup grp = new CombinedGroup("C1");
         this.engine = new PlanarizationEngine(graph);
         engine.setGroup(grp);
         this.saveDialog = new Save3DDialog(stage);

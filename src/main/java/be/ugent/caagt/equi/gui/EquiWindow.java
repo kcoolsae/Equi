@@ -29,7 +29,7 @@
 
 package be.ugent.caagt.equi.gui;
 
-import be.ugent.caagt.equi.groups.Symmetries;
+import be.ugent.caagt.equi.grp.Symmetries;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -31,7 +31,7 @@ package be.ugent.caagt.equi.engine;
 
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import be.ugent.caagt.equi.PlanarGraph;
-import be.ugent.caagt.equi.groups.ExtendedGroup;
+import be.ugent.caagt.equi.grp.CombinedGroup;
 
 import java.util.Random;
 
@@ -49,7 +49,7 @@ public class PlanarizationEngine {
 
     private int[][] edges;
 
-    private ExtendedGroup group;
+    private CombinedGroup group;
 
     public static final Random RG = new Random(4287649098235098324L);
 
@@ -72,7 +72,7 @@ public class PlanarizationEngine {
     }
 
 
-    public void setGroup(ExtendedGroup group) {
+    public void setGroup(CombinedGroup group) {
         this.group = group;
     }
 

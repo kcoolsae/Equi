@@ -27,22 +27,24 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
 
-import be.ugent.caagt.equi.groups.Generator;
-import be.ugent.caagt.equi.groups.PointGroup3D;
 import be.ugent.caagt.perm.Perm;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
- * Isomorphism class of cyclic groups of a given order.
+ * Cyclic permutation group
  */
 public class Cyclic extends AbstractCombinatorialGroup {
 
-    public Cyclic(int order) {
-        super(order);
+    private Perm gen;
+
+    public Cyclic(int degree, Perm gen) {
+        super(gen.order(), degree);
+        this.gen = gen;
     }
 
     @Override
@@ -50,48 +52,26 @@ public class Cyclic extends AbstractCombinatorialGroup {
         return "Z(" + order + ")";
     }
 
-    /**
-     * Return the cyclic group with the given order and signature, or null
-     * if this is not the signature of a cyclic group of that order
-     */
-    public static Cyclic fromSignature (int order, int[] signature) {
-        if (signature[signature.length-2] == order) {
-            return new Cyclic (order);
-        } else {
-            return null;
-        }
-    }
-
-    public Realization generateRealization(int degree, Perm g) {
-        Realization rel = new Realization(this, degree);
-        rel.setGenerator(Generator.C, g);
-        return rel;
-    }
-
     @Override
-    public Iterable<PointGroup3D> getPointGroups() {
-        Collection<PointGroup3D> list = new ArrayList<>();
-        list.add (PointGroup3D.C(order));
-        // TODO: more cases?
-        if (order == 5) {
-           list.add (PointGroup3D.C(order, 2));
-        } else if (order == 8 || order == 10) {
-           list.add (PointGroup3D.C(order, 3));
+    public Iterable<CombinedGroup> getPointGroups() {
+        Collection<CombinedGroup> list = new ArrayList<>();
+        for (int d : getDivisors(order)) {
+            list.add(new CombinedGroup("C" + num(order, d), order, degree,
+                    Collections.singleton(ExtendedPerm.rotation(gen, d))
+            ));
         }
-
         if (order % 2 == 0) {
-            list.add(PointGroup3D.S(order));
-            if (order == 10) {
-               list.add(PointGroup3D.S(order, 2));
+            for (int d : getDivisors(order)) {
+                list.add(new CombinedGroup("S" + num(order, d), order, degree,
+                        Collections.singleton(ExtendedPerm.rotoreflection(gen, d))
+                ));
             }
-        } else {
-            // TODO
         }
-
         if (order % 4 == 2) {
-            list.add(PointGroup3D.Ch(order/2));
-            if (order == 10) {
-               list.add(PointGroup3D.Ch(order/2, 2));
+            for (int d : getDivisors(order / 2)) {
+                list.add(new CombinedGroup("C" + order / 2 + "h", order, degree,
+                        Collections.singleton(ExtendedPerm.rotoreflection(gen, 2 * d))
+                ));
             }
         }
         return list;

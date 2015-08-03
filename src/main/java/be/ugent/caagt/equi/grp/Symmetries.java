@@ -27,7 +27,7 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
 
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.perm.Perm;
@@ -47,11 +47,11 @@ public class Symmetries {
 
     private int groupOrder;
 
-    private int[] signature;
-
     private CombinatorialGroup group;
 
-    private Realization realization;
+    public CombinatorialGroup getGroup() {
+        return group;
+    }
 
     /**
      * Return the order of the symmetry group.
@@ -85,7 +85,7 @@ public class Symmetries {
 
         // convert to permutations
         Perm[] permutations = new Perm[groupOrder];
-        Perm inv = Perm.create (sameCodes.get(0).labels).inv();
+        Perm inv = Perm.create(sameCodes.get(0).labels).inv();
         int pos = 0;
         for (Labelling labelling : sameCodes) {
             //permutations[pos] = inv.mul(Perm.create(labelling.labels));
@@ -99,55 +99,25 @@ public class Symmetries {
             orders[i] = permutations[i].order();
         }
         // compute order signature
-        SortedMap<Integer,Integer> map = new TreeMap<>();
+        SortedMap<Integer, Integer> map = new TreeMap<>();
         for (int order : orders) {
             if (map.containsKey(order)) {
-                map.put(order,map.get(order) + 1);
+                map.put(order, map.get(order) + 1);
             } else {
                 map.put(order, 1);
             }
         }
-        signature = new int[map.size()*2];
+        int[] signature = new int[map.size() * 2];
         pos = 0;
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             signature[pos] = entry.getKey();
-            pos ++;
+            pos++;
             signature[pos] = entry.getValue();
-            pos ++;
+            pos++;
         }
 
-        // determine point group
-        // first the infinite series
-        group = Cyclic.fromSignature(groupOrder, signature);
-        if (group == null) {
-            group = Dihedral.fromSignature(groupOrder, signature);
-        }
-        if (group == null) {
-            group = DoubleCyclic.fromSignature(groupOrder, signature);
-        }
-        if (group == null) {
-            group = DoubleDihedral.fromSignature(groupOrder, signature);
-        }
-        // now the remaining cases
-        switch (groupOrder) {
-            case 120:
-                group = new DoubleAlt5 ();
-                break;
-            case 60:
-                group = new Alt5 ();
-                break;
-            case 48:
-                group = new DoubleSym4 ();
-                break;
-            case 24:
-                if (signature[3] == 7) {
-                    group = new DoubleAlt4();
-                } else { // == 9
-                    group = new Sym4();
-                }
-        }
-        //
-        this.realization = group.findRealization(permutations, graph.getOrder());
+        group = resolve(graph.getOrder(), signature, permutations);
+
     }
 
     // represents a breadth first generated labelling of a graph
@@ -158,10 +128,10 @@ public class Symmetries {
         /* Construct a labelling of the graph, starting with the given directed edge and proceeding either
            in clockwise or anti-clockwise direction
           */
-        public Labelling (int begin, int end, boolean clockwise) {
+        public Labelling(int begin, int end, boolean clockwise) {
 
-            int[] queue =  new int[2*graph.getOrder()];
-            this.code = new int[2*graph.getSize() + graph.getOrder()];
+            int[] queue = new int[2 * graph.getOrder()];
+            this.code = new int[2 * graph.getSize() + graph.getOrder()];
             Arrays.fill(code, -1);
             int codePos = 0;
             this.labels = new int[graph.getOrder()];
@@ -178,11 +148,11 @@ public class Symmetries {
                 begin = queue[head];
                 head++;
                 end = queue[head];
-                head ++;
+                head++;
                 // find starting position among neighbours of end
                 int neighbours[] = graph.getNeighbours(begin);
                 int degree = neighbours.length;
-                int p=0;
+                int p = 0;
                 while (neighbours[p] != end) {
                     p++;
                 }
@@ -201,38 +171,122 @@ public class Symmetries {
                         tail++; // push onto queue
                     }
                     code[codePos] = c;
-                    codePos ++;
+                    codePos++;
                 }
-                codePos ++;
+                codePos++;
             }
         }
 
-        public boolean hasSameCodeAs (Labelling other) {
+        public boolean hasSameCodeAs(Labelling other) {
             return Arrays.equals(code, other.code);
         }
     }
 
+    /* =================================
+     * GROUP RESOLUTION
+     * ================================= */
 
-    @Override
-    public String toString() {
-        StringBuilder b = new StringBuilder();
-        if (group != null) {
-            b.append(String.format("Group %s (order=%d)\n", group, groupOrder));
-        } else {
-            b.append(String.format("Unknown group (order=%d)\n", groupOrder));
-            b.append("  order signature =");
-            for (int i = 0; i < signature.length; i += 2) {
-                b.append(" ").append(signature[i]);
-                if (signature[i + 1] > 1) {
-                    b.append("^").append(signature[i + 1]);
-                }
+    // TODO: move to another class with signature and permutations as fields
+
+    /**
+     * Find an element of given order among the given permutations.
+     */
+    private static Perm elementOfOrder(int order, Perm[] perms) {
+        for (Perm perm : perms) {
+            if (perm.order() == order) {
+                return perm;
             }
-            b.append("\n");
         }
-        return b.toString();
+        throw new IllegalStateException("Required group element not found");
     }
 
-    public Realization getRealization() {
-        return realization;
+    /**
+     * Find an element p of order n such that q.p has order m
+     */
+    private static Perm elementOfOrder(int n, Perm q, int m, Perm[] perms) {
+        for (Perm p : perms) {
+            if (p.order() == n && q.mul(p).order() == m) {
+                return p;
+            }
+        }
+        throw new IllegalStateException("Required group element not found");
     }
+
+    /**
+     * Try to resolve the given list of permutations as a cyclic group
+     */
+    private static CombinatorialGroup resolveCyclic(int[] signature, Perm[] permutations) {
+        return null;
+    }
+
+    /**
+     * Try to resolve the given list of permutations as a doubled cyclic group
+     */
+    private static CombinatorialGroup resolveDoubleCyclic(int degree, int[] signature, Perm[] permutations) {
+        return null;
+    }
+
+    /**
+     * Try to resolve the given list of permutations as a dihedral group
+     */
+    private static CombinatorialGroup resolveDihedral(int degree, int[] signature, Perm[] permutations) {
+        return null;
+    }
+
+    /**
+     * Try to resolve the given list of permutations as a doubled dihedral group
+     */
+    private static CombinatorialGroup resolveDoubleDihedral(int degree, int[] signature, Perm[] permutations) {
+        return null;
+    }
+
+    /**
+     * Return the combinatorial group that corresponds to the given list of permutations and signature
+     */
+    private static CombinatorialGroup resolve(int degree, int[] signature, Perm[] permutations) {
+
+        // first the infinite series
+        CombinatorialGroup group = resolveCyclic(signature, permutations);
+        if (group == null) {
+            group = resolveDihedral(degree, signature, permutations);
+        }
+        if (group == null) {
+            group = resolveDoubleCyclic(degree, signature, permutations);
+        }
+        if (group == null) {
+            group = resolveDoubleDihedral(degree, signature, permutations);
+        }
+        if (group == null) {
+            // now the remaining cases
+            switch (permutations.length) {
+                case 120: {
+                    Perm g5i = elementOfOrder(10, permutations);
+                    Perm g3 = elementOfOrder(3, g5i.pow(6), 2, permutations);
+                    group = new DoubleAlt5(degree, g5i, g3);
+                    break;
+                }
+                case 60: {
+                    Perm g5 = elementOfOrder(5, permutations);
+                    Perm g3 = elementOfOrder(3, g5, 2, permutations);
+                    group = new Alt5(degree, g5, g3);
+                    break;
+                }
+                case 48: {
+                    //group = new DoubleSym4(degree, );
+                    break;
+                }
+                case 24:
+                    if (signature[3] == 7) {
+                        //group = new DoubleAlt4()degree, ;
+                    } else { // == 9
+                        //group = new Sym4(degree, );
+                    }
+                    break;
+            }
+        }
+
+        return group;
+
+    }
+
 }

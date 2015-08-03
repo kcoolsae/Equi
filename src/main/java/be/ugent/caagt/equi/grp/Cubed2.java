@@ -1,4 +1,4 @@
-/* AbstractCombinatorialGroup.java
+/* DoubleDihedral.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -27,40 +27,52 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
 
-import be.ugent.caagt.equi.groups.PointGroup3D;
 import be.ugent.caagt.perm.Perm;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 /**
- * Common super class of all combinatorial groups
+ * Dihedral group of order 8
  */
-public abstract class AbstractCombinatorialGroup implements CombinatorialGroup {
+public class Cubed2 extends AbstractCombinatorialGroup {
 
-    protected int order;
+    // TODO: replace by DoubleDihedral(2)?
 
-    public int order() {
-        return order;
-    }
+    private Perm g2;
 
-    protected AbstractCombinatorialGroup (int order) {
-        this.order = order;
-    }
+    private Perm i;
 
-    @Override
-    public Realization findRealization(Perm[] perms, int degree) {
-        return null;
-    }
+    private Perm g2star;
 
-    @Override
-    public Iterable<PointGroup3D> getPointGroups() {
-        return Collections.emptyList();
+    public Cubed2(int degree, Perm g2, Perm i, Perm g2star) {
+        super(8, degree);
+        this.g2 = g2;
+        this.i = i;
+        this.g2star = g2star;
     }
 
     @Override
-    public Iterable<Realization> getSubgroupRealizations(Realization base) {
-        return Collections.singletonList(base);
+    public String toString() {
+        return "2.2.2";
+    }
+
+    @Override
+    public Iterable<CombinatorialGroup> getSubgroups() {
+        return Arrays.asList(
+                this // TODO
+        );
+    }
+
+    @Override
+    public Iterable<CombinedGroup> getPointGroups() {
+        return Arrays.asList(
+           new CombinedGroup("D2h", order, degree, Arrays.asList(
+                   new ExtendedPerm(g2, PointGroupElement.ROT_G2),
+                   new ExtendedPerm(i, PointGroupElement.ONE.minus()),
+                   new ExtendedPerm(g2star, PointGroupElement.ROT_G2STAR)
+           )) // TODO: others
+        );
     }
 }

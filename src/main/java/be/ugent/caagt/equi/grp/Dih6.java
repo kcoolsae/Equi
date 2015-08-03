@@ -1,4 +1,4 @@
-/* ExtendedPerm.java
+/* DoubleDihedral.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -27,46 +27,46 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
 
 import be.ugent.caagt.perm.Perm;
 
+import java.util.Arrays;
+
 /**
- * Permutation extended with the corresponding point group element
+ * Dihedral group of order 12 with point group realizations that use a special rotation axis of order 3
  */
-public class ExtendedPerm {
+public class Dih6 extends AbstractCombinatorialGroup {
 
-    public Perm perm;
+    private Perm g3i;
 
-    public Perm invPerm;
+    private Perm g2prime;
 
-    public double[][] mat;
-
-    public ExtendedPerm(Perm perm, Perm invPerm, double[][] mat) {
-        this.perm = perm;
-        this.invPerm = invPerm;
-        this.mat = mat;
+    public Dih6(int degree, Perm g3i, Perm g2prime) {
+        super(12, degree);
+        this.g3i = g3i;
+        this.g2prime = g2prime;
     }
 
-    public ExtendedPerm() {
-        this.perm = Perm.ONE;
-        this.invPerm = Perm.ONE;
-        this.mat = new double[][] {{1,0,0}, {0,1,0}, {0,0,1}};
+    @Override
+    public String toString() {
+        return "Dih(6)";
     }
 
-    public ExtendedPerm mul (ExtendedPerm other) {
-        double[][] result = new double[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                for (int k = 0; k < 3; k++) {
-                    result[i][k] += mat[i][j]*other.mat[j][k];
-                }
-            }
-        }
-        return new ExtendedPerm(perm.mul(other.perm), other.invPerm.mul(invPerm), result);
+    @Override
+    public Iterable<CombinatorialGroup> getSubgroups() {
+        return Arrays.asList(
+                new Cyclic(degree, g3i) // TODO
+        );
     }
 
-    public boolean sameAs (ExtendedPerm other) {
-        return perm.equals(other.perm);
+    @Override
+    public Iterable<CombinedGroup> getPointGroups() {
+        return Arrays.asList(
+           new CombinedGroup("D3d", order, degree, Arrays.asList(
+                   new ExtendedPerm(g3i, PointGroupElement.ROT_3.minus()),
+                   new ExtendedPerm(g2prime, PointGroupElement.REFLECT_PHI)
+           ))
+        );
     }
 }

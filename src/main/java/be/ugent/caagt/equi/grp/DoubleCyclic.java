@@ -1,4 +1,4 @@
-/* DoubleDihedral.java
+/* DoubleCyclic.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -27,37 +27,42 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
+
+import be.ugent.caagt.perm.Perm;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
- * Isomorphism class of even cyclic groups multiplied by 2
+ * Product of a cyclic group and a central involution.
  */
-public class DoubleDihedral extends AbstractCombinatorialGroup {
+public class DoubleCyclic extends AbstractCombinatorialGroup {
 
-    private int par;
+    private Perm gen;
 
-    public DoubleDihedral(int par) {
-        super(4*par);
-        this.par = par;
+    private Perm invol;
+
+    public DoubleCyclic(int degree, Perm gen, Perm invol) {
+        super(2*gen.order(), degree);
+        this.gen = gen;
+        this.invol = invol;
     }
 
     @Override
     public String toString() {
-        return "2.Dih(" + par + ")";
+        return "2.Z(" + order/2 + ")";
     }
 
-    /**
-     * Return the double dihedral group with the given order and signature, or null
-     * if this is not the signature of a double dihedral group of that order
-     */
-    public static DoubleDihedral fromSignature (int order, int[] signature) {
-        if (order % 4 != 0) {
-            return null; // dihedral should not be recognized as double dihedral
-        }
-        if (signature[signature.length-2] == order/4 && signature[3] == 3+order/2) {
-            return new DoubleDihedral(order/4);
-        } else {
-            return null;
-        }
+    @Override
+    public Iterable<CombinatorialGroup> getSubgroups() {
+        return Arrays.asList(
+                new Cyclic(degree, gen)
+        );
+    }
+
+    @Override
+    public Iterable<CombinedGroup> getPointGroups() {
+        return Collections.emptyList(); // TODO
     }
 }

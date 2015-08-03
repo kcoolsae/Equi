@@ -1,4 +1,4 @@
-/* Generator.java
+/* DoubleDihedral.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -27,11 +27,47 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
+
+import be.ugent.caagt.perm.Perm;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
- * Generator names for standard generators of point groups / combinatorial groups.
+ * Product of a dihedral group and a central involution.
  */
-public enum Generator {
-    G5, G5I, G4, G4I, G3, G3I, G2, G2star, G2prime, R, RI, I, C, G2I, D
+public class DoubleDihedral extends AbstractCombinatorialGroup {
+
+    private Perm gen;
+
+    private Perm invol;
+
+    private Perm mirror;
+
+    public DoubleDihedral(int degree, Perm gen, Perm invol, Perm mirror) {
+        super(2*gen.order(), degree);
+        this.gen = gen;
+        this.invol = invol;
+        this.mirror = mirror;
+    }
+
+    @Override
+    public String toString() {
+        return "2.Dih(" + order/4 + ")";
+    }
+
+    @Override
+    public Iterable<CombinatorialGroup> getSubgroups() {
+        return Arrays.asList(
+                new Dihedral(degree, gen, mirror),
+                new DoubleCyclic(degree, gen, invol),
+                new Cyclic(degree, gen)
+        );
+    }
+
+    @Override
+    public Iterable<CombinedGroup> getPointGroups() {
+        return Collections.emptyList(); // TODO
+    }
 }

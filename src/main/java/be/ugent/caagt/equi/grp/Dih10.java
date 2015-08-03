@@ -1,4 +1,4 @@
-/* Alt4.java
+/* DoubleDihedral.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -27,38 +27,50 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
+package be.ugent.caagt.equi.grp;
 
-import be.ugent.caagt.equi.groups.Generator;
-import be.ugent.caagt.equi.groups.PointGroup3D;
 import be.ugent.caagt.perm.Perm;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 /**
+ * Dihedral group of order 20 with point group realizations that use a special rotation axis of order 5
  */
-public class Alt4 extends AbstractCombinatorialGroup {
+public class Dih10 extends AbstractCombinatorialGroup {
 
-    public Alt4() {
-        super(12);
+    private Perm g5i;
+
+    private Perm g2;
+
+    public Dih10(int degree, Perm g5i, Perm g2) {
+        super(20, degree);
+        this.g5i = g5i;
+        this.g2 = g2;
     }
 
     @Override
     public String toString() {
-        return "Alt(4)";
-    }
-
-    public Realization generateRealization(int degree, Perm g3, Perm g2) {
-        Realization rel = new Realization(this, degree);
-        rel.setGenerator(Generator.G3, g3);
-        rel.setGenerator(Generator.G2, g2);
-        rel.setGenerator(Generator.G2star, g2.conj(g3));
-        return rel;
+        return "Dih(10)";
     }
 
     @Override
-    public Iterable<PointGroup3D> getPointGroups() {
-        return Collections.singletonList(PointGroup3D.T);
+    public Iterable<CombinatorialGroup> getSubgroups() {
+        return Arrays.asList(
+                new Cyclic(degree, g5i) // TODO
+        );
     }
 
+    @Override
+    public Iterable<CombinedGroup> getPointGroups() {
+        return Arrays.asList(
+           new CombinedGroup("D5d", order, degree, Arrays.asList(
+                   new ExtendedPerm(g5i, PointGroupElement.ROT_5.minus()),
+                   new ExtendedPerm(g2, PointGroupElement.ROT_G2)
+           )),
+           new CombinedGroup("D5/2d", order, degree, Arrays.asList(
+                   new ExtendedPerm(g5i, PointGroupElement.ROT_5_STAR.minus()),
+                   new ExtendedPerm(g2, PointGroupElement.ROT_G2)
+           )) // TODO: others
+        );
+    }
 }

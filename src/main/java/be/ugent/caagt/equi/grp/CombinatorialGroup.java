@@ -1,4 +1,4 @@
-/* Cubed2.java
+/* CombinatorialGroup.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
  * 
@@ -27,37 +27,32 @@
  * distribution).  If not, see http://www.gnu.org/licenses/.
  */
 
-package be.ugent.caagt.equi.groups;
-
-import be.ugent.caagt.equi.groups.Generator;
-import be.ugent.caagt.equi.groups.PointGroup3D;
-import be.ugent.caagt.perm.Perm;
-
-import java.util.Collections;
+package be.ugent.caagt.equi.grp;
 
 /**
- * Abstract Abelian group 2<sup>3</sup>
+ * Represents a realization of an abstract group as a permutation group. Specific implementations
+ * of this interface correspond to specific isomorphism classes.
  */
-public class Cubed2 extends AbstractCombinatorialGroup {
+public interface CombinatorialGroup {
 
-    public Cubed2() { super(8); }
+    /**
+     * Order of the permutation group
+     */
+    public int getOrder ();
 
-    @Override
-    public String toString() {
-        return "2.2.2";
-    }
+    /**
+     * Degree of the permutation group
+     */
+    public int getDegree ();
 
-    @Override
-    public Iterable<PointGroup3D> getPointGroups() {
-        return Collections.singletonList(PointGroup3D.D2h);
-    }
+    /**
+     * Return a list of subgroups of this group relevant to this application.
+     */
+    public Iterable<CombinatorialGroup> getSubgroups();
 
-    public Realization generateRealization(int degree, Perm a, Perm b, Perm c) {
-        Realization rel = new Realization(this, degree);
-        rel.setGenerator(Generator.G2, a);
-        rel.setGenerator(Generator.G2star, b);
-        rel.setGenerator(Generator.I, c);
-        return rel;
-    }
+    /**
+     * Return the list of point groups for this group
+     */
+    public Iterable<CombinedGroup> getPointGroups();
 
 }

@@ -29,7 +29,7 @@
 
 package be.ugent.caagt.equi.gui;
 
-import be.ugent.caagt.equi.groups.ExtendedGroup;
+import be.ugent.caagt.equi.grp.CombinedGroup;
 import javafx.scene.control.ToggleButton;
 
 /**
@@ -37,19 +37,18 @@ import javafx.scene.control.ToggleButton;
  */
 public class SelectGroupButton extends ToggleButton {
 
-    private ExtendedGroup group;
+    private CombinedGroup group;
 
-    public SelectGroupButton(String caption, ExtendedGroup group) {
-        super(caption);
+    public SelectGroupButton(CombinedGroup group) {
+        super(group.getCaption());
         this.group = group;
     }
 
     public SelectGroupButton() {
-        super("C1");
-        this.group = new ExtendedGroup();
+        this (new CombinedGroup("C1"));
     }
 
-    public ExtendedGroup getGroup() {
+    public CombinedGroup getGroup() {
         return group;
     }
 }

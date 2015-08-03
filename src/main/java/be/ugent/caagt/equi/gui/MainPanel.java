@@ -31,7 +31,7 @@ package be.ugent.caagt.equi.gui;
 
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.fx.GraphListPanel;
-import be.ugent.caagt.equi.groups.Symmetries;
+import be.ugent.caagt.equi.grp.Symmetries;
 import javafx.application.Platform;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
