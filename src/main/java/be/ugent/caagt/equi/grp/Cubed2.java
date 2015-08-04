@@ -55,7 +55,7 @@ public class Cubed2 extends AbstractCombinatorialGroup {
 
     @Override
     public String toString() {
-        return "2.2.2";
+        return "2.Dih(2)";
     }
 
     @Override

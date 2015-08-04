@@ -36,49 +36,26 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Cyclic permutation group
+ * Represents the trivial group
  */
-public class Cyclic extends AbstractCombinatorialGroup {
+public class Trivial extends AbstractCombinatorialGroup {
 
-    private Perm gen;
-
-    public Cyclic(int degree, Perm gen) {
-        super(gen.order(), degree);
-        this.gen = gen;
+    public Trivial(int degree) {
+        super(1, degree);
     }
 
     @Override
     public String toString() {
-        return "Z(" + order + ")";
-    }
-
-    @Override
-    public Iterable<CombinatorialGroup> getSubgroups() {
-        return Collections.singleton(this);
+        return "1";
     }
 
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
-        Collection<CombinedGroup> list = new ArrayList<>();
-        for (int d : getDivisors(order)) {
-            list.add(new CombinedGroup("C" + num(order, d), order, degree,
-                    Collections.singleton(ExtendedPerm.rotation(gen, d))
-            ));
-        }
-        if (order % 2 == 0) {
-            for (int d : getDivisors(order)) {
-                list.add(new CombinedGroup("S" + num(order, d), order, degree,
-                        Collections.singleton(ExtendedPerm.rotoreflection(gen, d))
-                ));
-            }
-        }
-        if (order % 4 == 2) {
-            for (int d : getDivisors(order / 2)) {
-                list.add(new CombinedGroup("C" + num(order / 2,d) + "h", order, degree,
-                        Collections.singleton(ExtendedPerm.rotoreflection(gen, 2 * d))
-                ));
-            }
-        }
-        return list;
+        return Collections.singleton(CombinedGroup.TRIVIAL_GROUP);
+    }
+
+    @Override
+    public Iterable<CombinatorialGroup> getSubgroups() {
+        return Collections.emptyList();
     }
 }

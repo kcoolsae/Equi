@@ -46,7 +46,7 @@ public interface CombinatorialGroup {
     public int getDegree ();
 
     /**
-     * Return a list of subgroups of this group relevant to this application.
+     * Return a list of subgroups of this group relevant to this application. Should not contain the trivial group.
      */
     public Iterable<CombinatorialGroup> getSubgroups();
 

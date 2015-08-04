@@ -45,7 +45,7 @@ public class SelectGroupButton extends ToggleButton {
     }
 
     public SelectGroupButton() {
-        this (new CombinedGroup("C1"));
+        this (CombinedGroup.TRIVIAL_GROUP);
     }
 
     public CombinedGroup getGroup() {

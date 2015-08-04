@@ -31,7 +31,9 @@ package be.ugent.caagt.equi.grp;
 
 import be.ugent.caagt.perm.Perm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -43,26 +45,43 @@ public class DoubleCyclic extends AbstractCombinatorialGroup {
 
     private Perm invol;
 
+    private Perm otherInvol;
+
     public DoubleCyclic(int degree, Perm gen, Perm invol) {
-        super(2*gen.order(), degree);
+        super(2 * gen.order(), degree);
         this.gen = gen;
         this.invol = invol;
+        this.otherInvol = gen.pow(order / 4).mul(invol);
     }
 
     @Override
     public String toString() {
-        return "2.Z(" + order/2 + ")";
+        return "2.Z(" + order / 2 + ")";
     }
 
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
         return Arrays.asList(
+                this,
                 new Cyclic(degree, gen)
         );
     }
 
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
-        return Collections.emptyList(); // TODO
+        Collection<CombinedGroup> list = new ArrayList<>();
+        if (order % 4 == 0) {
+            for (int d : getDivisors(order / 2)) {
+                list.add(new CombinedGroup("C" + num(order / 2, d) + "h", order, degree,
+                        Arrays.asList(ExtendedPerm.rotation(gen, d),
+                                new ExtendedPerm(invol, PointGroupElement.REFLECT_H))
+                ));
+                list.add(new CombinedGroup("C" + num(order / 2, d) + "h'", order, degree,
+                         Arrays.asList(ExtendedPerm.rotation(gen, d),
+                                 new ExtendedPerm(otherInvol, PointGroupElement.REFLECT_H))
+                 ));
+             }
+        }
+        return list;
     }
 }

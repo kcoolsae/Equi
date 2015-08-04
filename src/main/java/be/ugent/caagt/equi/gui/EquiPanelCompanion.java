@@ -107,7 +107,7 @@ public class EquiPanelCompanion {
         ToggleButton c1Button = new SelectGroupButton();
         c1Button.setToggleGroup(toggleGroup);
         hbox.getChildren().addAll(
-                new Label("C1"),
+                new Label("1"),
                 c1Button
         );
         c1Button.setSelected(true);
@@ -126,7 +126,7 @@ public class EquiPanelCompanion {
         );
 
         // start with the trivial group
-        CombinedGroup grp = new CombinedGroup("C1");
+        CombinedGroup grp = CombinedGroup.TRIVIAL_GROUP;
         this.engine = new PlanarizationEngine(graph);
         engine.setGroup(grp);
         this.saveDialog = new Save3DDialog(stage);

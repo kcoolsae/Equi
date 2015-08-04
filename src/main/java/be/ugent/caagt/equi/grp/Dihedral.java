@@ -58,6 +58,7 @@ public class Dihedral extends AbstractCombinatorialGroup {
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
         return Arrays.asList(
+                this,
                 new Cyclic(degree, gen)
         );
     }
@@ -79,15 +80,15 @@ public class Dihedral extends AbstractCombinatorialGroup {
         }
         if (order % 4 == 0) {
             for (int d : getDivisors(order / 2)) {
-                list.add(new CombinedGroup("D" + order / 4 + "d", order, degree,
-                        Arrays.asList(ExtendedPerm.rotoreflection(gen, d),
-                            new ExtendedPerm(mirror, PointGroupElement.REFLECT_V))
+                list.add(new CombinedGroup("D" + num(order / 4,d) + "d", order, degree,
+                        Arrays.asList(ExtendedPerm.rotoreflection(gen, d) ,
+                            new ExtendedPerm(mirror, PointGroupElement.REFLECT_V) )
                 ));
             }
         }
         if (order % 8 == 4) {
             for (int d : getDivisors(order / 4)) {
-                list.add(new CombinedGroup("D" + order / 4 + "h", order, degree,
+                list.add(new CombinedGroup("D" + num(order / 4, d) + "h", order, degree,
                         Arrays.asList(ExtendedPerm.rotoreflection(gen, 2*d),
                             new ExtendedPerm(mirror, PointGroupElement.REFLECT_V))
                 ));

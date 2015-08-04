@@ -186,7 +186,23 @@ public class Symmetries {
      * GROUP RESOLUTION
      * ================================= */
 
-    // TODO: move to another class with signature and permutations as fields
+    // TODO: move to another class with signature and permutations as fields AND permutation orders...
+
+    /**
+     * Is this an involution that commutes with every element of the group?
+     */
+    private static boolean isCentralInvolution(Perm g, Perm[] perms) {
+        if (g.order() == 2) {
+            for (Perm perm : perms) {
+                if (!perm.mul(g).equals(g.mul(perm))){
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Find an element of given order among the given permutations.
@@ -215,29 +231,73 @@ public class Symmetries {
     /**
      * Try to resolve the given list of permutations as a cyclic group
      */
-    private static CombinatorialGroup resolveCyclic(int[] signature, Perm[] permutations) {
-        return null;
+    private static CombinatorialGroup resolveCyclic(int degree, int[] signature, Perm[] permutations) {
+        if (signature[signature.length - 2] == permutations.length) {
+            return new Cyclic(degree, elementOfOrder(permutations.length, permutations));
+        } else {
+            return null;
+        }
     }
 
     /**
      * Try to resolve the given list of permutations as a doubled cyclic group
      */
     private static CombinatorialGroup resolveDoubleCyclic(int degree, int[] signature, Perm[] permutations) {
-        return null;
+        if (permutations.length % 4 != 0) {
+            return null;  // cyclic should not be recognized as double cyclic
+        } else {
+            int halfOrder = permutations.length / 2;
+            if (signature[signature.length - 2] == halfOrder && signature[3] == 3) {
+                Perm g = elementOfOrder(halfOrder, permutations);
+                Perm invol = elementOfOrder(2, g.pow(halfOrder / 2), 2, permutations);
+                return new DoubleCyclic(degree, g, invol);
+            } else {
+                return null;
+            }
+        }
     }
 
     /**
      * Try to resolve the given list of permutations as a dihedral group
      */
     private static CombinatorialGroup resolveDihedral(int degree, int[] signature, Perm[] permutations) {
-        return null;
+        int halfOrder = permutations.length / 2;
+        if (signature[signature.length - 2] == halfOrder && signature[3] == halfOrder + (1 - halfOrder % 2)) {
+            Perm g = elementOfOrder(halfOrder, permutations);
+            Perm m = elementOfOrder(2, g, 2, permutations);
+            return new Dihedral(degree, g, m);
+        } else {
+            return null;
+        }
     }
 
     /**
      * Try to resolve the given list of permutations as a doubled dihedral group
      */
     private static CombinatorialGroup resolveDoubleDihedral(int degree, int[] signature, Perm[] permutations) {
-        return null;
+        if (permutations.length % 8 != 0) {
+            return null;
+        } else {
+            int quarterOrder = permutations.length / 4;
+            if (signature[signature.length - 2] == quarterOrder && signature[3] == 2 * quarterOrder + 1 + 2 * (1 - quarterOrder % 2)) {
+                Perm g = elementOfOrder(quarterOrder, permutations);
+                Perm h = g.pow(quarterOrder / 2); // involution that belongs to the cyclic subgroup
+                int pos = 1;
+                while (!permutations[pos].equals(h) && !isCentralInvolution(permutations[pos], permutations)) {
+                    pos++;
+                }
+                Perm g2 = permutations[pos];
+                pos = 1;
+                while (permutations[pos].order() != 2 ||
+                       isCentralInvolution(permutations[pos], permutations)) {
+                    pos++;
+                }
+                Perm g3 = permutations[pos];
+                return new DoubleDihedral(degree, g, g3, g2);
+            } else {
+                return null;
+            }
+        }
     }
 
     /**
@@ -245,13 +305,28 @@ public class Symmetries {
      */
     private static CombinatorialGroup resolve(int degree, int[] signature, Perm[] permutations) {
 
+        if (permutations.length == 1) {
+            return new Trivial(degree);
+        }
+
         // first the infinite series
-        CombinatorialGroup group = resolveCyclic(signature, permutations);
+        CombinatorialGroup group = resolveCyclic(degree, signature, permutations);
         if (group == null) {
             group = resolveDihedral(degree, signature, permutations);
         }
         if (group == null) {
             group = resolveDoubleCyclic(degree, signature, permutations);
+        }
+        if (permutations.length == 8 && signature[3] == 7) {
+            // special case for double dihedral
+            Perm a = permutations[1];
+            Perm b = permutations[2];
+            Perm ab = a.mul(b);
+            int pos = 3;
+            while (!permutations[pos].equals(ab)) {
+                pos ++;
+            }
+            group = new Cubed2(degree, a, b, permutations[pos]);
         }
         if (group == null) {
             group = resolveDoubleDihedral(degree, signature, permutations);
@@ -272,19 +347,31 @@ public class Symmetries {
                     break;
                 }
                 case 48: {
-                    //group = new DoubleSym4(degree, );
+                    Perm g3i = elementOfOrder(6, permutations);
+                    Perm g4 = elementOfOrder(4, g3i.mul(g3i), 2, permutations);
+                    group = new DoubleSym4(degree, g3i, g4);
                     break;
                 }
                 case 24:
                     if (signature[3] == 7) {
-                        //group = new DoubleAlt4()degree, ;
-                    } else { // == 9
-                        //group = new Sym4(degree, );
+                        Perm g3i = elementOfOrder(6, permutations);
+                        Perm g2 = elementOfOrder(2, g3i.pow(3), 6, permutations);
+                        group = new DoubleAlt4(degree, g3i, g2);
+                    } else { //if (signature[3] == 9)
+                        Perm g3 = elementOfOrder(3, permutations);
+                        Perm g4 = elementOfOrder(4, g3, 2, permutations);
+                        group = new Sym4(degree, g3, g4);
+                    }
+                    break;
+                case 12:
+                    if (signature[3] == 3 && signature[5] == 8) {
+                        Perm g3 = elementOfOrder(3, permutations);
+                        Perm g2 = elementOfOrder(2, permutations);
+                        group = new Alt4(degree, g3, g2);
                     }
                     break;
             }
         }
-
         return group;
 
     }

@@ -55,11 +55,6 @@ public abstract class AbstractCombinatorialGroup implements CombinatorialGroup {
         return 0;
     }
 
-    @Override
-    public Iterable<CombinatorialGroup> getSubgroups() {
-        return Collections.singletonList(this); // no additional relevant subgroups
-    }
-
     private static final int[][] DIVISORS = {
                 {1}, {1}, {1}, {1}, {1}, // 0- 4
                 {1, 2}, {1}, {1, 2}, {1, 3}, {1, 2, 4}, // 5-9

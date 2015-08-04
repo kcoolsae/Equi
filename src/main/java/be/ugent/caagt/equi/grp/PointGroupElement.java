@@ -118,12 +118,18 @@ public class PointGroupElement {
             new PointGroupElement(new double[][]{{0, 0, 1}, {0, -1, 0}, {1, 0, 0}});
 
     /**
-     * Reflection with respect to the plane X=Z
+     * Reflection with respect to the plane Z=0
      */
     public static final PointGroupElement REFLECT_V =
-            new PointGroupElement(new double[][]{{0, 0, 1}, {0, 1, 0}, {1, 0, 0}});
+            new PointGroupElement(new double[][]{{1, 0, 0}, {0, 1, 0}, {0, 0, -1}});
 
-    private static final double PHI = 0.5 * (1.0 + Math.sqrt(5.0));
+    /**
+     * Reflection with respect to the plane Y=0
+     */
+    public static final PointGroupElement REFLECT_H =
+            new PointGroupElement(new double[][]{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}});
+
+   private static final double PHI = 0.5 * (1.0 + Math.sqrt(5.0));
 
     /**
      * Rotation of order 5 in standard orientation for the icosahedron
@@ -173,5 +179,10 @@ public class PointGroupElement {
     public static final PointGroupElement ROT_G2STAR =
             new PointGroupElement(new double[][]{{1, 0, 0}, {0, -1, 0}, {0, 0, -1}});
 
+    /**
+     * Rotation of 90° around the Y-axis
+     */
+    public static final PointGroupElement ROT_G4 =
+            new PointGroupElement(new double[][]{{0, 0, 1}, {0, 1, 0}, {-1, 0, 0,}});
 
 }
