@@ -42,24 +42,20 @@ import java.util.Locale;
  */
 public class SpinputOutputStream extends GraphOutputStream {
 
-    // Code based on SpinputWriter of in Cage - Nico Van Cleemput
+    // Code based on SpinputWriter in Cage - Nico Van Cleemput
 
     private PrintWriter writer;
 
     private int atomNumber;
 
-    private String atomName;
-
     private double scaleFactor;
 
-    public SpinputOutputStream(OutputStream out) throws IOException {
+    public SpinputOutputStream(OutputStream out, int atomNumber, double scaleFactor) throws IOException {
         super(out);
 
         this.writer = new PrintWriter(new OutputStreamWriter(out, "US-ASCII"));
-        atomNumber = 2;
-        atomName = "H"; // TODO: retrieve from table
-        scaleFactor = 1.4;
-
+        this.atomNumber = atomNumber;
+        this.scaleFactor = scaleFactor;
     }
 
     @Override
@@ -77,7 +73,7 @@ public class SpinputOutputStream extends GraphOutputStream {
         // labels
         writer.print("ENDCART\nATOMLABELS\n");
         for (int i = 0; i < order; i++) {
-            writer.printf("\"%s%d\"\n", atomName, i + 1);
+            writer.printf("\"%d\"\n", i + 1);
         }
         writer.print("ENDATOMLABELS\nHESSIAN\n");
         for (int i = 1; i <= order; i++) {

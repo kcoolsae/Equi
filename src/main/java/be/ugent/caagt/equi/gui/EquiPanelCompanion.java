@@ -37,11 +37,9 @@ import be.ugent.caagt.equi.grp.CombinedGroup;
 import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.fx.SimpleGraphView3D;
+import be.ugent.caagt.equi.io.SpinputOutputStream;
 import javafx.geometry.Point3D;
-import javafx.scene.control.Label;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -49,6 +47,8 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 /**
  * Companion class for {@code EquiPanel.fxml}
@@ -78,6 +78,10 @@ public class EquiPanelCompanion {
 
     private CombinatorialGroup group;
 
+    public ChoiceBox<String> atomicNumber;
+
+    public TextField scaleFactor;
+
     public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
         this.graph = symmetries.getGraph();
         this.group = symmetries.getGroup();
@@ -85,6 +89,17 @@ public class EquiPanelCompanion {
     }
 
     public void initialize() {
+        // Interface related
+        int an = Preferences.userNodeForPackage(SpinputOutputStream.class).getInt("atomicNumber", 2);
+        for (String s : atomicNumber.getItems()) {
+            if (s.startsWith(an + " ")) {
+                atomicNumber.setValue(s);
+            }
+        }
+        double sf = Preferences.userNodeForPackage(SpinputOutputStream.class).getDouble("scaleFactor", 5.0);
+        scaleFactor.setText(Double.toString(sf));
+
+        // Graph related
         nrOfVertices.setText(Integer.toString(graph.getOrder()));
         nrOfEdges.setText(Integer.toString(graph.getSize()));
         nrOfFaces.setText(Integer.toString(graph.getNumberOfFaces()));
@@ -221,6 +236,23 @@ public class EquiPanelCompanion {
     }
 
     public void doSaveSpinput(){
+        // atomic number
+        String s = atomicNumber.getValue();
+        int an = Integer.parseInt(s.substring(0, s.indexOf(' ')));
+        saveDialog.setSpinputAtomicNumber(an);
+        Preferences.userNodeForPackage(SpinputOutputStream.class).putInt("atomicNumber", an);
+
+        // scale factor
+        try {
+            double d = Double.parseDouble(scaleFactor.getText());
+            saveDialog.setSpinputScaleFactor(d);
+            Preferences.userNodeForPackage(SpinputOutputStream.class).putDouble("scaleFactor", d);
+        } catch (NumberFormatException e) {
+            scaleFactor.setText("5.0");
+            Logger.getLogger("be.ugent.caagt.equi").warning("Invalid scale factor for spinput");
+            return; // do not save
+        }
+
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.SPINPUT);
     }
 

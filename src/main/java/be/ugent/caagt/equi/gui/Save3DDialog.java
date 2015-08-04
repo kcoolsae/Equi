@@ -57,6 +57,18 @@ public class Save3DDialog {
         this.owner = owner;
     }
 
+    private int spinputAtomicNumber;
+
+    private double spinputScaleFactor;
+
+    public void setSpinputAtomicNumber(int spinputAtomicNumber) {
+        this.spinputAtomicNumber = spinputAtomicNumber;
+    }
+
+    public void setSpinputScaleFactor(double spinputScaleFactor) {
+        this.spinputScaleFactor = spinputScaleFactor;
+    }
+
     public enum OutputType {
         WRITE_GRAPH("WriteGraph3D files", "*.w3d"),
         SPINPUT("Spinput files", "*.spinput");
@@ -98,7 +110,7 @@ public class Save3DDialog {
             try (FileOutputStream out = new FileOutputStream(file);
                  GraphOutputStream gos =
                          type == OutputType.WRITE_GRAPH ? new WriteGraphOutputStream(out, 3)
-                                 : new SpinputOutputStream(out)
+                                 : new SpinputOutputStream(out, spinputAtomicNumber, spinputScaleFactor)
             ) {
                 gos.writeGraph(graph);
                 lastFile = file;

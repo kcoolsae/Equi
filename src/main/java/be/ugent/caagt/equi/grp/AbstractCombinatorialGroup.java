@@ -29,8 +29,6 @@
 
 package be.ugent.caagt.equi.grp;
 
-import java.util.Collections;
-
 /**
  * Common super class of combinatorial group
  */

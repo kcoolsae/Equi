@@ -18,6 +18,10 @@ HBox {
   -fx-padding: 5;
 }
 
+.toggle-button {
+  -fx-font-size: 85%;
+}
+
 .toggle-button:selected {
   -fx-font-weight: bold;
 }

@@ -29,10 +29,6 @@
 
 package be.ugent.caagt.equi.grp;
 
-import be.ugent.caagt.perm.Perm;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 /**

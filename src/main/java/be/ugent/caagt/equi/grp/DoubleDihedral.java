@@ -34,7 +34,6 @@ import be.ugent.caagt.perm.Perm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Product of a dihedral group and a central involution.

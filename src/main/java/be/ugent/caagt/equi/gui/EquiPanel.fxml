@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import be.ugent.caagt.equi.fx.SimpleGraphView3D?>
+<?import java.lang.String?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="-1.0" prefWidth="-1.0" stylesheets="@equi.css"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
@@ -49,7 +50,22 @@
                     </HBox>
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
                         <Button mnemonicParsing="false" text="Save (w3d)" onAction="#doSave"/>
+                        <Region minWidth="20"/> <!-- spacer -->
                         <Button mnemonicParsing="false" text="Save (spinput)" onAction="#doSaveSpinput"/>
+                        <ChoiceBox fx:id="atomicNumber">
+                            <String fx:value="1 H"/>
+                            <String fx:value="2 He"/>
+                            <String fx:value="6 C"/>
+                            <String fx:value="7 N"/>
+                            <String fx:value="8 O"/>
+                            <String fx:value="10 Ne"/>
+                            <String fx:value="14 Si"/>
+                            <String fx:value="16 S"/>
+                            <String fx:value="53 I"/>
+                            <String fx:value="54 Xe"/>
+                        </ChoiceBox>
+                        <Label text="Scale:"/>
+                        <TextField fx:id="scaleFactor" prefWidth="45"/>
                     </HBox>
                 </VBox>
             </TitledPane>
