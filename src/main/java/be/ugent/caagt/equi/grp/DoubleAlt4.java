@@ -54,12 +54,20 @@ public class DoubleAlt4 extends AbstractCombinatorialGroup {
 
     @Override
     public String toString() {
-        return "2.Alt(4)";
+        return "2Alt(4)";
     }
 
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
-        return Collections.emptyList(); // TODO
+        Perm i = g3i.pow(3);
+        Perm g3 = g3i.mul(i);
+        Perm g2star = g2.conj(g3i);
+        return Arrays.asList(
+                 this,
+                 new Alt4(degree, g3, g2),
+                 new Cubed2(degree, g2, g2star, i),
+                 new Cyclic (degree, g3i)
+         );
     }
 
     @Override

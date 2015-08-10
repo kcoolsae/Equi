@@ -59,16 +59,26 @@ public class Sym4 extends AbstractCombinatorialGroup {
 
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
-        return Collections.singleton(this); // TODO
+        Perm g2 = g4.mul(g4);
+        Perm g2star = g2.conj(g3);
+        return Arrays.asList(
+                this,
+                new Alt4(degree, g3, g2),
+                new Dihedral(degree, g3, g4.mul(g2star)) // TODO: need Dih3? (= Sym(3))
+        );
     }
 
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
-        return Collections.singleton(
+        return Arrays.asList(
                 new CombinedGroup("O", order, degree, Arrays.asList(
                         new ExtendedPerm(g3, PointGroupElement.ROT_3),
-                        new ExtendedPerm(g4, PointGroupElement.ROT_G4 )
-                )) // TODO T_d
+                        new ExtendedPerm(g4, PointGroupElement.ROT_G4)
+                )),
+                new CombinedGroup("Td", order, degree, Arrays.asList(
+                        new ExtendedPerm(g3, PointGroupElement.ROT_3),
+                        new ExtendedPerm(g4, PointGroupElement.ROT_G4.minus())
+                ))
         );
     }
 

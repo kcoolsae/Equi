@@ -124,6 +124,12 @@ public class PointGroupElement {
             new PointGroupElement(new double[][]{{1, 0, 0}, {0, 1, 0}, {0, 0, -1}});
 
     /**
+     * Reflection with respect to the plane X=Z
+     */
+    public static final PointGroupElement REFLECT_R =
+            new PointGroupElement(new double[][]{{0, 0, 1}, {0, 1, 0}, {1, 0, 0}});
+
+    /**
      * Reflection with respect to the plane Y=0
      */
     public static final PointGroupElement REFLECT_H =

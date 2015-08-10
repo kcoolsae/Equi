@@ -46,14 +46,17 @@ public class DoubleDihedral extends AbstractCombinatorialGroup {
 
     private Perm mirror;
 
-    private Perm otherCentral;
+    private Perm[] centrals;
+
+    private Perm[] mirrors;
 
     public DoubleDihedral(int degree, Perm gen, Perm mirror, Perm central) {
         super(4 * gen.order(), degree);
         this.gen = gen;
         this.central = central;
         this.mirror = mirror;
-        this.otherCentral = gen.pow(order / 8).mul(central);
+        this.centrals = new Perm[]{central, gen.pow(order / 8).mul(central)};
+        this.mirrors = new Perm[]{mirror, mirror.mul(gen), mirror.mul(central), mirror.mul(central).mul(gen)};
     }
 
     @Override
@@ -65,7 +68,7 @@ public class DoubleDihedral extends AbstractCombinatorialGroup {
     public Iterable<CombinatorialGroup> getSubgroups() {
         return Arrays.asList(
                 this,
-                new Dihedral(degree, gen, mirror),
+                new Dihedral(degree, gen, mirror), // TODO: there should be 4 of these
                 new DoubleCyclic(degree, gen, central),
                 new Cyclic(degree, gen)
         );
@@ -77,16 +80,16 @@ public class DoubleDihedral extends AbstractCombinatorialGroup {
         if (order % 8 == 0) {
             int quarterOrder = order / 4;
             for (int d : getDivisors(quarterOrder)) {
-                list.add(new CombinedGroup("D" + num(quarterOrder, d) + "h", order, degree,
-                        Arrays.asList(ExtendedPerm.rotation(gen, d),
-                                new ExtendedPerm(mirror, PointGroupElement.REFLECT_V),
-                                new ExtendedPerm(central, PointGroupElement.MINUS_ONE))
-                ));
-                list.add(new CombinedGroup("D" + num(quarterOrder, d) + "h'", order, degree,
-                        Arrays.asList(ExtendedPerm.rotation(gen, d),
-                                new ExtendedPerm(mirror, PointGroupElement.REFLECT_V),
-                                new ExtendedPerm(otherCentral, PointGroupElement.MINUS_ONE))
-                ));
+                for (Perm c : centrals) {
+                    for (Perm m : mirrors) {
+                        list.add(new CombinedGroup("D" + num(quarterOrder, d) + "h", order, degree,
+                                Arrays.asList(ExtendedPerm.rotation(gen, d),
+                                        new ExtendedPerm(m, PointGroupElement.REFLECT_V),
+                                        new ExtendedPerm(c, PointGroupElement.MINUS_ONE))
+                        ));
+
+                    }
+                }
             }
         }
         return list;

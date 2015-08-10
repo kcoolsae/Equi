@@ -54,7 +54,8 @@ public class Z10 extends AbstractCombinatorialGroup {
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
         return Arrays.asList(
-                this // TODO
+                this,
+                new Z5(degree, g5i.mul(g5i))
         );
     }
 

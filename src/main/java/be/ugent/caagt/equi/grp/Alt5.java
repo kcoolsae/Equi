@@ -63,8 +63,8 @@ public class Alt5 extends AbstractCombinatorialGroup {
         return Arrays.asList(
                 this,
                 new Alt4(degree, g3, g2),
-                new Dihedral(degree, g5, g2), // TODO: alternative Dih5
-                new Cyclic(degree, g5) // TODO: alternative Z(5)
+                new Dih5(degree, g5, g2),
+                new Z5(degree, g5)
         );
     }
 

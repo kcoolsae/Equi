@@ -54,12 +54,27 @@ public class DoubleSym4 extends AbstractCombinatorialGroup {
 
     @Override
     public String toString() {
-        return "2.Sym(4)";
+        return "2Sym(4)";
     }
 
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
-        return Collections.singletonList(this); // TODO
+        Perm i = g3i.pow(3);
+        Perm g3 = g3i.mul(i);
+        Perm g4i = g4.mul(i);
+        Perm g2 = g4.mul(g4);
+        Perm g2star = g2.conj(g3);
+
+        return Arrays.asList(
+                this,
+                new Sym4(degree, g3, g4),
+                new Sym4(degree, g3, g4i),
+                new DoubleAlt4(degree, g3i, g2),
+                new DoubleDihedral(degree, g4, i, g2star),
+                new Alt4(degree, g3, g2),
+                new Dih6(degree, g3i, g4i.mul(g2star)),
+                new Dih6(degree, g3i, g4.mul(g2star))
+        );
     }
 
     @Override
@@ -67,7 +82,7 @@ public class DoubleSym4 extends AbstractCombinatorialGroup {
         return Collections.singleton(
                 new CombinedGroup("Oh", order, degree, Arrays.asList(
                         new ExtendedPerm(g3i, PointGroupElement.ROT_3.minus()),
-                        new ExtendedPerm(g4, PointGroupElement.ROT_G4 )
+                        new ExtendedPerm(g4, PointGroupElement.ROT_G4)
                 ))
         );
     }

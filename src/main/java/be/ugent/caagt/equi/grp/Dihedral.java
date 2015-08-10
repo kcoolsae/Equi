@@ -44,10 +44,17 @@ public class Dihedral extends AbstractCombinatorialGroup {
 
     private Perm mirror;
 
+    private Perm[] mirrors;
+
     public Dihedral(int degree, Perm gen, Perm mirror) {
         super(2 * gen.order(), degree);
         this.gen = gen;
         this.mirror = mirror;
+        if (order % 4 == 0) {
+            mirrors = new Perm[]{mirror, mirror.mul(gen)};
+        } else {
+            mirrors = new Perm[]{mirror};
+        }
     }
 
     @Override
@@ -57,41 +64,56 @@ public class Dihedral extends AbstractCombinatorialGroup {
 
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
-        return Arrays.asList(
-                this,
-                new Cyclic(degree, gen)
-        );
+        Collection<CombinatorialGroup> list = new ArrayList<>();
+        list.add(this);
+        list.add(new Cyclic(degree, gen));
+        if (order % 4 == 0) {
+            Perm gen2 = gen.mul(gen);
+            for (Perm m : mirrors) {
+                list.add(new Dihedral(degree, gen2, m));
+            }
+            list.add(new Cyclic(degree, gen2));
+        }
+        return list;
     }
 
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
         Collection<CombinedGroup> list = new ArrayList<>();
         for (int d : getDivisors(order / 2)) {
-            list.add(new CombinedGroup("D" + num(order / 2, d), order, degree,
-                    Arrays.asList(ExtendedPerm.rotation(gen, d),
-                            new ExtendedPerm(mirror, PointGroupElement.ROT_D))
-            ));
+            for (Perm m : mirrors) {
+                list.add(new CombinedGroup("D" + num(order / 2, d), order, degree,
+                        Arrays.asList(ExtendedPerm.rotation(gen, d),
+                                new ExtendedPerm(m, PointGroupElement.ROT_G2STAR))
+                ));
+            }
         }
         for (int d : getDivisors(order / 2)) {
-            list.add(new CombinedGroup("C" + num(order / 2, d) + "v", order, degree,
-                    Arrays.asList(ExtendedPerm.rotation(gen, d),
-                            new ExtendedPerm(mirror, PointGroupElement.REFLECT_V))
-            ));
+            for (Perm m : mirrors) {
+                list.add(new CombinedGroup("C" + num(order / 2, d) + "v", order, degree,
+                        Arrays.asList(ExtendedPerm.rotation(gen, d),
+                                new ExtendedPerm(m, PointGroupElement.REFLECT_V))
+                ));
+            }
         }
         if (order % 4 == 0) {
             for (int d : getDivisors(order / 2)) {
-                list.add(new CombinedGroup("D" + num(order / 4,d) + "d", order, degree,
-                        Arrays.asList(ExtendedPerm.rotoreflection(gen, d) ,
-                            new ExtendedPerm(mirror, PointGroupElement.REFLECT_V) )
-                ));
+                for (Perm m : mirrors) {
+                    list.add(new CombinedGroup("D" + num(order / 4, d) + "d", order, degree,
+                            Arrays.asList(ExtendedPerm.rotoreflection(gen, d),
+                                    new ExtendedPerm(m, PointGroupElement.REFLECT_V))
+                    ));
+                }
             }
         }
         if (order % 8 == 4) {
             for (int d : getDivisors(order / 4)) {
-                list.add(new CombinedGroup("D" + num(order / 4, d) + "h", order, degree,
-                        Arrays.asList(ExtendedPerm.rotoreflection(gen, 2*d),
-                            new ExtendedPerm(mirror, PointGroupElement.REFLECT_V))
-                ));
+                for (Perm m : mirrors) {
+                    list.add(new CombinedGroup("D" + num(order / 4, d) + "h", order, degree,
+                            Arrays.asList(ExtendedPerm.rotoreflection(gen, 2 * d),
+                                    new ExtendedPerm(mirror, PointGroupElement.REFLECT_V))
+                    ));
+                }
             }
         }
         return list;

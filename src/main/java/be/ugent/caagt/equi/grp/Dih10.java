@@ -31,10 +31,12 @@ package be.ugent.caagt.equi.grp;
 
 import be.ugent.caagt.perm.Perm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
- * Dihedral group of order 20 with point group realizations that use a special rotation axis of order 5
+ * Dihedral group of order 20 with point group realizations that use a special rotation axis of order 5.
  */
 public class Dih10 extends AbstractCombinatorialGroup {
 
@@ -42,10 +44,13 @@ public class Dih10 extends AbstractCombinatorialGroup {
 
     private Perm g2;
 
+    private Perm[] mirrors;
+
     public Dih10(int degree, Perm g5i, Perm g2) {
         super(20, degree);
         this.g5i = g5i;
         this.g2 = g2;
+        mirrors = new Perm[]{g2, g2.mul(g5i)};
     }
 
     @Override
@@ -56,21 +61,47 @@ public class Dih10 extends AbstractCombinatorialGroup {
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
         return Arrays.asList(
+                this,
                 new Cyclic(degree, g5i) // TODO
         );
     }
 
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
-        return Arrays.asList(
-           new CombinedGroup("D5d", order, degree, Arrays.asList(
-                   new ExtendedPerm(g5i, PointGroupElement.ROT_5.minus()),
-                   new ExtendedPerm(g2, PointGroupElement.ROT_G2)
-           )),
-           new CombinedGroup("D5/2d", order, degree, Arrays.asList(
-                   new ExtendedPerm(g5i, PointGroupElement.ROT_5_STAR.minus()),
-                   new ExtendedPerm(g2, PointGroupElement.ROT_G2)
-           )) // TODO: others
-        );
+        Collection<CombinedGroup> list = new ArrayList<>();
+        for (int d : getDivisors(10)) {
+            for (Perm m : mirrors) {
+                list.add(new CombinedGroup("D" + num(5, d) + "d", order, degree, Arrays.asList(
+                                new ExtendedPerm(g5i, PointGroupElement.ROT_5.minus()),
+                                new ExtendedPerm(m, PointGroupElement.ROT_G2)
+                        ))
+                );
+            }
+        }
+        for (int d : getDivisors(5)) {
+            for (Perm m : mirrors) {
+                list.add(new CombinedGroup("[D" + num(5, d) + "h]", order, degree,
+                        Arrays.asList(ExtendedPerm.rotoreflection(g5i, 2 * d),
+                                new ExtendedPerm(m, PointGroupElement.REFLECT_V))
+                ));
+            }
+        }
+        for (int d : getDivisors(10)) {
+            for (Perm m : mirrors) {
+                list.add(new CombinedGroup("[D" + num(10, d) + "]", order, degree,
+                        Arrays.asList(ExtendedPerm.rotation(g5i, d),
+                                new ExtendedPerm(m, PointGroupElement.ROT_G2STAR))
+                ));
+            }
+        }
+        for (int d : getDivisors(10)) {
+            for (Perm m : mirrors) {
+                list.add(new CombinedGroup("[C" + num(10, d) + "v]", order, degree,
+                        Arrays.asList(ExtendedPerm.rotation(g5i, d),
+                                new ExtendedPerm(m, PointGroupElement.REFLECT_V))
+                ));
+            }
+        }
+        return list;
     }
 }

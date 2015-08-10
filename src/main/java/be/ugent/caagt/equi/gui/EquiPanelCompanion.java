@@ -40,6 +40,7 @@ import be.ugent.caagt.equi.fx.SimpleGraphView3D;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
 import javafx.geometry.Point3D;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -109,11 +110,13 @@ public class EquiPanelCompanion {
             HBox hbox = new HBox();
             Label caption = new Label(subgroup.toString());
             hbox.getChildren().add(caption);
+            FlowPane pane = new FlowPane();
             for (CombinedGroup pointGroup : subgroup.getPointGroups()) {
                 ToggleButton button = new SelectGroupButton( pointGroup );
-                hbox.getChildren().add(button);
+                pane.getChildren().add(button);
                 button.setToggleGroup(toggleGroup);
             }
+            hbox.getChildren().add(pane);
             hbox.getStyleClass().add("group");
             groupPane.getChildren().add(hbox);
         }

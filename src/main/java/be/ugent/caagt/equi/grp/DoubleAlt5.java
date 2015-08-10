@@ -53,7 +53,7 @@ public class DoubleAlt5 extends AbstractCombinatorialGroup {
 
     @Override
     public String toString() {
-        return "2.Alt(5)";
+        return "2Alt(5)";
     }
 
     @Override
@@ -71,10 +71,10 @@ public class DoubleAlt5 extends AbstractCombinatorialGroup {
                 new Dih10(degree,g5i,g2),
                 new Dih6(degree, g3.mul(i), g2prime),
                 new Z10(degree, g5i),
-                new Dihedral(degree, g5, g2), // TODO: alternative Dih5
+                new Dih5(degree, g5, g2),
                 new Cubed2(degree, g2, i, g2.conj(g3)),
                 // TODO: missing Sym(3) 2.Sym(3) etc.
-                new Cyclic(degree, g5) // TODO: alternative Z5
+                new Z5(degree, g5) // TODO: alternative Z5
         );
     }
 
