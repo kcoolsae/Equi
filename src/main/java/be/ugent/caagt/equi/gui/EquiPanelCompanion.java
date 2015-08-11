@@ -154,19 +154,41 @@ public class EquiPanelCompanion {
     }
 
     public void showPolyhedron() {
+        // coincident points are colored in red
         double[][] coordinates = engine.getCoordinates();
-        List<Point3D> vertices = new ArrayList<>();
-        for (double[] coordinate : coordinates) {
-            vertices.add(new Point3D(
-                    coordinate[0],
-                    coordinate[1],
-                    coordinate[2]));
+        boolean[] coincident = new boolean[coordinates.length];
+
+        // maybe we should to this faster?
+        for (int i = 0; i < coordinates.length; i++) {
+            double[] first = coordinates[i];
+            for (int j = i+1; j < coordinates.length; j++) {
+                double[] second = coordinates[j];
+                double distance = 0.0;
+                for (int k = 0; k < 3; k++) {
+                    distance += Math.abs(second[k] - first[k]);
+                }
+                if (distance < 1E-05) {
+                    coincident[i] = true;
+                    coincident[j] = true;
+                }
+            }
         }
         Polyhedron poly = new Polyhedron();
-        poly.addVertices(Color.LIGHTSALMON, vertices);
+        List<Point3D> vertices = new ArrayList<>();
+        for (int i = 0; i < coordinates.length; i++) {
+            double[] coordinate = coordinates[i];
+
+
+            Point3D vertex = new Point3D(
+                    coordinate[0],
+                    coordinate[1],
+                    coordinate[2]);
+            vertices.add(vertex);
+            poly.addVertex(coincident[i] ? Color.RED : Color.LIGHTSALMON, vertex);
+        }
         graph.sweepEdges(
                 edge -> poly.addEdge(
-                        Color.WHITE,
+                        coincident[edge[0]] && coincident [edge[1]] ? Color.CRIMSON : Color.WHITE,
                         vertices.get(edge[0]),
                         vertices.get(edge[1])
                 )
