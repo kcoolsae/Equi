@@ -185,6 +185,14 @@ public class PlanarizationEngine {
         center();
     }
 
+    public void multipleSteps(int count) {
+        for (int i = 0; i < count; i++) {
+            variables = solver.step(variables);
+            group.symmetrize(variables);
+        }
+        center();
+    }
+
     public void symmetrize() {
         group.symmetrize(variables);
         rescale(1.0 / averageEdgeLength());

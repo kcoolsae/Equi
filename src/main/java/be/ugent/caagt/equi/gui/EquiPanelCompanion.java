@@ -204,6 +204,16 @@ public class EquiPanelCompanion {
         showPolyhedron();
     }
 
+    public void do5steps() {
+        engine.multipleSteps(5);
+        showPolyhedron();
+    }
+
+    public void do10steps() {
+        engine.multipleSteps(10);
+        showPolyhedron();
+    }
+
     public void doInflate() {
         engine.rescale(1.5);
         showPolyhedron();

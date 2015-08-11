@@ -45,7 +45,9 @@
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
                         <Button mnemonicParsing="false" text="Run" onAction="#doRun"/>
                         <Button mnemonicParsing="false" text="Long" onAction="#doLongRun"/>
-                        <Button mnemonicParsing="false" text="Step" onAction="#doSingleStep"/>
+                        <Button mnemonicParsing="false" text="1 step" onAction="#doSingleStep"/>
+                        <Button mnemonicParsing="false" text="5 steps" onAction="#do5steps"/>
+                        <Button mnemonicParsing="false" text="10 steps" onAction="#do10steps"/>
                         <Button mnemonicParsing="false" text="Symmetrize" onAction="#doSymmetrize"/>
                     </HBox>
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
