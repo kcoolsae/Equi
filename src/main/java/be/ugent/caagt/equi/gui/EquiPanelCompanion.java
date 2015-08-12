@@ -93,6 +93,11 @@ public class EquiPanelCompanion {
         this.graph = symmetries.getGraph();
         this.group = symmetries.getGroup();
         this.stage = stage;
+        stage.setOnCloseRequest(e -> {
+            if (longTaskThread != null) {
+                longTaskThread.stop(); // :-( I see no other solution except forking the jvm...
+            }
+        });
     }
 
     public void initialize() {
@@ -292,8 +297,12 @@ public class EquiPanelCompanion {
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.SPINPUT);
     }
 
+    private Thread longTaskThread;
+
     private void runAsLongTask(Runnable runnable) {
-        new Thread(new LongTask(runnable)).start();
+        longTaskThread = new Thread(new LongTask(runnable));
+        longTaskThread.setDaemon(true);
+        longTaskThread.start();
     }
 
     /**
@@ -325,6 +334,7 @@ public class EquiPanelCompanion {
         protected void succeeded() {
             progressBar.setVisible(false);
             leftPane.setDisable(false);
+            longTaskThread = null;
             showPolyhedron();
         }
 
