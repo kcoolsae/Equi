@@ -38,6 +38,8 @@ import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.fx.SimpleGraphView3D;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.Point3D;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
@@ -83,6 +85,10 @@ public class EquiPanelCompanion {
 
     public TextField scaleFactor;
 
+    public VBox leftPane;
+
+    public ProgressBar progressBar;
+
     public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
         this.graph = symmetries.getGraph();
         this.group = symmetries.getGroup();
@@ -112,7 +118,7 @@ public class EquiPanelCompanion {
             hbox.getChildren().add(caption);
             FlowPane pane = new FlowPane();
             for (CombinedGroup pointGroup : subgroup.getPointGroups()) {
-                ToggleButton button = new SelectGroupButton( pointGroup );
+                ToggleButton button = new SelectGroupButton(pointGroup);
                 pane.getChildren().add(button);
                 button.setToggleGroup(toggleGroup);
             }
@@ -161,7 +167,7 @@ public class EquiPanelCompanion {
         // maybe we should to this faster?
         for (int i = 0; i < coordinates.length; i++) {
             double[] first = coordinates[i];
-            for (int j = i+1; j < coordinates.length; j++) {
+            for (int j = i + 1; j < coordinates.length; j++) {
                 double[] second = coordinates[j];
                 double distance = 0.0;
                 for (int k = 0; k < 3; k++) {
@@ -188,7 +194,7 @@ public class EquiPanelCompanion {
         }
         graph.sweepEdges(
                 edge -> poly.addEdge(
-                        coincident[edge[0]] && coincident [edge[1]] ? Color.CRIMSON : Color.WHITE,
+                        coincident[edge[0]] && coincident[edge[1]] ? Color.CRIMSON : Color.WHITE,
                         vertices.get(edge[0]),
                         vertices.get(edge[1])
                 )
@@ -212,28 +218,23 @@ public class EquiPanelCompanion {
     }
 
     public void doSingleStep() {
-        engine.singleStep();
-        showPolyhedron();
+        runAsLongTask(engine::singleStep);
     }
 
     public void doRun() {
-        engine.timedStep(2000L);
-        showPolyhedron();
+        runAsLongTask(() -> engine.timedStep(2000L));
     }
 
     public void doLongRun() {
-        engine.timedStep(15000L);
-        showPolyhedron();
+        runAsLongTask(() -> engine.timedStep(15000L));
     }
 
     public void do5steps() {
-        engine.multipleSteps(5);
-        showPolyhedron();
+        runAsLongTask(() -> engine.multipleSteps(5));
     }
 
     public void do10steps() {
-        engine.multipleSteps(10);
-        showPolyhedron();
+        runAsLongTask(() -> engine.multipleSteps(10));
     }
 
     public void doInflate() {
@@ -270,7 +271,7 @@ public class EquiPanelCompanion {
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.WRITE_GRAPH);
     }
 
-    public void doSaveSpinput(){
+    public void doSaveSpinput() {
         // atomic number
         String s = atomicNumber.getValue();
         int an = Integer.parseInt(s.substring(0, s.indexOf(' ')));
@@ -289,6 +290,54 @@ public class EquiPanelCompanion {
         }
 
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.SPINPUT);
+    }
+
+    private void runAsLongTask(Runnable runnable) {
+        new Thread(new LongTask(runnable)).start();
+    }
+
+    /**
+     * Task that takes potentially a long time to run. Before starting the GUI is disabled and
+     * a progress bar is shown. At the end the progress bar is hidden and the GUI is restored.
+     */
+
+    class LongTask extends Task<Void> {
+
+        private Runnable runnable;
+
+        LongTask(Runnable runnable) {
+            this.runnable = runnable;
+        }
+
+        @Override
+        protected Void call() throws Exception {
+            runnable.run();
+            return null;
+        }
+
+        @Override
+        protected void running() {
+            leftPane.setDisable(true);
+            progressBar.setVisible(true);
+        }
+
+        @Override
+        protected void succeeded() {
+            progressBar.setVisible(false);
+            leftPane.setDisable(false);
+            showPolyhedron();
+        }
+
+        @Override
+        protected void failed() {
+            succeeded();
+        }
+
+        @Override
+        protected void cancelled() {
+            succeeded();
+        }
+
     }
 
 }

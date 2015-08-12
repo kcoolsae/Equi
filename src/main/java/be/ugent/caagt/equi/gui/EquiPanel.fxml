@@ -8,7 +8,8 @@
             prefHeight="-1.0" prefWidth="-1.0" stylesheets="@equi.css"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <left>
-        <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@equi.css">
+        <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+              stylesheets="@equi.css" fx:id="leftPane">
             <TitledPane animated="false" text="Graph Properties">
                 <VBox prefWidth="500.0">
                     <HBox>
@@ -74,7 +75,10 @@
         </VBox>
     </left>
     <center>
-        <SimpleGraphView3D fx:id="view3D" BorderPane.alignment="CENTER">
-        </SimpleGraphView3D>
+        <StackPane>
+            <SimpleGraphView3D fx:id="view3D" BorderPane.alignment="CENTER">
+            </SimpleGraphView3D>
+            <ProgressBar fx:id="progressBar" progress="-1" visible="false" StackPane.alignment="TOP_LEFT"/>
+        </StackPane>
     </center>
 </BorderPane>
