@@ -5,6 +5,8 @@ import be.ugent.caagt.perm.Perm;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Resolves groups. Returns a combinatorial group that corresponds to a given set of permutations;
@@ -160,80 +162,82 @@ public class GroupResolver {
      * Return the combinatorial group that corresponds to the given list of permutations
      */
     public CombinatorialGroup resolve() {
-
-        if (permutations.length == 1) {
-            return new Trivial(degree);
-        }
-
-        // first the infinite series
-        CombinatorialGroup group = resolveCyclic();
-        if (group == null) {
-            group = resolveDihedral();
-        }
-        if (permutations.length == 4 && signature[3] == 3) {
-            // special case for double cyclic
-            group = new Squared2(degree, permutations[1], permutations[2]);
-        }
-        if (group == null) {
-            group = resolveDoubleCyclic();
-        }
-        if (permutations.length == 8 && signature[3] == 7) {
-            // special case for double dihedral
-            Perm a = permutations[1];
-            Perm b = permutations[2];
-            Perm ab = a.mul(b);
-            int pos = 3;
-            while (!permutations[pos].equals(ab)) {
-                pos++;
+        try {
+            if (permutations.length == 1) {
+                return new Trivial(degree);
             }
-            group = new Cubed2(degree, a, b, permutations[pos]);
-        }
-        if (group == null) {
-            group = resolveDoubleDihedral();
-        }
-        if (group == null) {
-            // now the remaining cases
-            switch (permutations.length) {
-                case 120: {
-                    Perm g5i = elementOfOrder(10);
-                    Perm g3 = elementOfOrder(3, g5i.pow(6), 2);
-                    group = new DoubleAlt5(degree, g5i, g3);
-                    break;
+
+            // first the infinite series
+            CombinatorialGroup group = resolveCyclic();
+            if (group == null) {
+                group = resolveDihedral();
+            }
+            if (permutations.length == 4 && signature[3] == 3) {
+                // special case for double cyclic
+                group = new Squared2(degree, permutations[1], permutations[2]);
+            }
+            if (group == null) {
+                group = resolveDoubleCyclic();
+            }
+            if (permutations.length == 8 && signature[3] == 7) {
+                // special case for double dihedral
+                Perm a = permutations[1];
+                Perm b = permutations[2];
+                Perm ab = a.mul(b);
+                int pos = 3;
+                while (!permutations[pos].equals(ab)) {
+                    pos++;
                 }
-                case 60: {
-                    Perm g5 = elementOfOrder(5);
-                    Perm g3 = elementOfOrder(3, g5, 2);
-                    group = new Alt5(degree, g5, g3);
-                    break;
-                }
-                case 48: {
-                    Perm g3i = elementOfOrder(6);
-                    Perm g4 = elementOfOrder(4, g3i.pow(4), 2);
-                    group = new DoubleSym4(degree, g3i, g4);
-                    break;
-                }
-                case 24:
-                    if (signature[3] == 7) {
+                group = new Cubed2(degree, a, b, permutations[pos]);
+            }
+            if (group == null) {
+                group = resolveDoubleDihedral();
+            }
+            if (group == null) {
+                // now the remaining cases
+                switch (permutations.length) {
+                    case 120: {
+                        Perm g5i = elementOfOrder(10);
+                        Perm g3 = elementOfOrder(3, g5i.pow(6), 2);
+                        group = new DoubleAlt5(degree, g5i, g3);
+                        break;
+                    }
+                    case 60: {
+                        Perm g5 = elementOfOrder(5);
+                        Perm g3 = elementOfOrder(3, g5, 2);
+                        group = new Alt5(degree, g5, g3);
+                        break;
+                    }
+                    case 48: {
                         Perm g3i = elementOfOrder(6);
-                        Perm g2 = elementOfOrder(2, g3i.pow(3), 6);
-                        group = new DoubleAlt4(degree, g3i, g2);
-                    } else { //if (signature[3] == 9)
-                        Perm g3 = elementOfOrder(3);
-                        Perm g4 = elementOfOrder(4, g3, 2);
-                        group = new Sym4(degree, g3, g4);
+                        Perm g4 = elementOfOrder(4, g3i.pow(4), 2);
+                        group = new DoubleSym4(degree, g3i, g4);
+                        break;
                     }
-                    break;
-                case 12:
-                    if (signature[3] == 3 && signature[5] == 8) {
-                        Perm g3 = elementOfOrder(3);
-                        Perm g2 = elementOfOrder(2);
-                        group = new Alt4(degree, g3, g2);
-                    }
-                    break;
+                    case 24:
+                        if (signature[3] == 7) {
+                            Perm g3i = elementOfOrder(6);
+                            Perm g2 = elementOfOrder(2, g3i.pow(3), 6);
+                            group = new DoubleAlt4(degree, g3i, g2);
+                        } else { //if (signature[3] == 9)
+                            Perm g3 = elementOfOrder(3);
+                            Perm g4 = elementOfOrder(4, g3, 2);
+                            group = new Sym4(degree, g3, g4);
+                        }
+                        break;
+                    case 12:
+                        if (signature[3] == 3 && signature[5] == 8) {
+                            Perm g3 = elementOfOrder(3);
+                            Perm g2 = elementOfOrder(2);
+                            group = new Alt4(degree, g3, g2);
+                        }
+                        break;
+                }
             }
+            return group;
+        } catch (IllegalStateException ex) {
+            Logger.getLogger("be.ugent.caagt.equi").log(Level.SEVERE, "Inconsistency in group determination", ex);
+            throw ex;
         }
-        return group;
-
     }
-
 }

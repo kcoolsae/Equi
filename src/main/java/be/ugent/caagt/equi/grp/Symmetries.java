@@ -33,6 +33,7 @@ import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.perm.Perm;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Represents the symmetries of a planar graph.
@@ -94,6 +95,9 @@ public class Symmetries {
         }
 
         group = new GroupResolver(permutations, graph.getOrder()).resolve();
+        if (group == null) {
+            Logger.getLogger("be.ugent.caagt.equi").warning("Unknown automorphism group for graph");
+        }
 
     }
 
