@@ -66,7 +66,7 @@ public class SpinputOutputStream extends GraphOutputStream {
         for (int i = 0; i < order; i++) {
             writer.printf("\t%d", atomNumber);
             for (double c : graph.getCoordinates(i)) {
-                writer.printf(Locale.US, "\t%9.7f", c*scaleFactor);
+                writer.printf(Locale.US, "\t%17.15f", c*scaleFactor);
             }
             writer.println();
         }

@@ -56,7 +56,7 @@ public class WriteGraphOutputStream extends GraphOutputStream {
         for (int i = 0; i < order; i++) {
             writer.printf("%4d", i+1);
             for (double c : graph.getCoordinates(i)) {
-                writer.printf(Locale.US, " %9.7f", c);
+                writer.printf(Locale.US, " %17.15f", c);
             }
             for (int n : graph.getNeighbours(i)) {
                 writer.printf(Locale.US, " %4d", n+1);
