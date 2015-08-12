@@ -217,7 +217,7 @@ public class GroupResolver {
                     case 24:
                         if (signature[3] == 7) {
                             Perm g3i = elementOfOrder(6);
-                            Perm g2 = elementOfOrder(2, g3i.pow(3), 6);
+                            Perm g2 = elementOfOrder(2, g3i.pow(4), 3);
                             group = new DoubleAlt4(degree, g3i, g2);
                         } else { //if (signature[3] == 9)
                             Perm g3 = elementOfOrder(3);
