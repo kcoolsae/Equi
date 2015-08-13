@@ -19,7 +19,8 @@
             </placeholder>
         </TableView>
         <HBox alignment="CENTER" VBox.vgrow="NEVER">
-            <Button onAction="#doButton" mnemonicParsing="false" text="Show Selected"/>
+            <Button fx:id="showButton" onAction="#doShow" mnemonicParsing="false" text="Show"/>
+            <Button fx:id="removeButton" onAction="#doRemove" mnemonicParsing="false" text="Remove"/>
         </HBox>
     </children>
 </fx:root>

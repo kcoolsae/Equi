@@ -31,13 +31,17 @@ package be.ugent.caagt.equi.fx;
 
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import be.ugent.caagt.equi.PlanarGraph;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 
+import java.util.EventListener;
 import java.util.function.Consumer;
 
 public class GraphListPanelCompanion {
@@ -51,6 +55,12 @@ public class GraphListPanelCompanion {
 
     public ObservableList<PlanarGraph> graphs;
 
+
+    public Button showButton;
+    public Button removeButton;
+
+    private TableView.TableViewSelectionModel<PlanarGraph> selectionModel;
+
     private Consumer<PlanarGraph> graphProcessor;
 
     public void setGraphProcessor(Consumer<PlanarGraph> graphProcessor) {
@@ -62,31 +72,79 @@ public class GraphListPanelCompanion {
 
         tableView.setItems(graphs);
 
-        nameColumn.setCellValueFactory( new PropertyValueFactory<>("name") );
-        orderColumn.setCellValueFactory( new PropertyValueFactory<>("order") );
-        sizeColumn.setCellValueFactory( new PropertyValueFactory<>("size") );
-        facesColumn.setCellValueFactory( new PropertyValueFactory<>("numberOfFaces") );
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        orderColumn.setCellValueFactory(new PropertyValueFactory<>("order"));
+        sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+        facesColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfFaces"));
 
         tableView.setRowFactory(view -> {
             TableRow<PlanarGraph> result = new TableRow<>();
-            result.setOnMouseClicked(event ->  {
+            result.setOnMouseClicked(event -> {
                 if (event.getClickCount() > 1) {
                     graphProcessor.accept(result.getItem());
                 }
-            } )  ;
+            });
             return result;
         });
+
+        tableView.setOnKeyReleased(new KeyHandler());
+
+        this.selectionModel = tableView.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+        selectionModel.selectedIndexProperty().addListener(new SelectionListener());
+
+        showButton.setDisable(true);
+        removeButton.setDisable(true);
+    }
+
+    class SelectionListener implements InvalidationListener {
+
+        @Override
+        public void invalidated(Observable observable) {
+            boolean empty = selectionModel.isEmpty();
+            showButton.setDisable(empty);
+            removeButton.setDisable(empty);
+        }
+    }
+
+    class KeyHandler implements EventHandler<KeyEvent> {
+
+        @Override
+        public void handle(KeyEvent event) {
+            switch (event.getCode()) {
+                case DELETE:
+                case BACK_SPACE:
+                    doRemove();
+                    break;
+                case ENTER:
+                    doShow();
+                    break;
+                default:
+                    // do not consume event
+                    return;
+            }
+            event.consume();
+        }
     }
 
     /**
-     * Called when button is pressed.
+     * Shows all selected items.
      */
-    public void doButton() {
+    public void doShow() {
         if (graphProcessor != null) {
-            PlanarGraph graph = tableView.getSelectionModel().getSelectedItem();
-            if (graph != null) {
+            for (PlanarGraph graph : tableView.getSelectionModel().getSelectedItems()) {
                 graphProcessor.accept(graph);
             }
+        }
+    }
+
+    /**
+     * Deletes all selected items from list
+     */
+    public void doRemove() {
+        ObservableList<Integer> indices = tableView.getSelectionModel().getSelectedIndices();
+        for (int i = indices.size() - 1; i >= 0; i--) {
+            tableView.getItems().remove(indices.get(i).intValue());
         }
     }
 
