@@ -112,22 +112,10 @@ public class PointGroupElement {
     }
 
     /**
-     * Rotation of 180° around the axis (1,0,1), perpendicular to the Y-axis
-     */
-    public static final PointGroupElement ROT_D =
-            new PointGroupElement(new double[][]{{0, 0, 1}, {0, -1, 0}, {1, 0, 0}});
-
-    /**
      * Reflection with respect to the plane Z=0
      */
     public static final PointGroupElement REFLECT_V =
             new PointGroupElement(new double[][]{{1, 0, 0}, {0, 1, 0}, {0, 0, -1}});
-
-    /**
-     * Reflection with respect to the plane X=Z
-     */
-    public static final PointGroupElement REFLECT_R =
-            new PointGroupElement(new double[][]{{0, 0, 1}, {0, 1, 0}, {1, 0, 0}});
 
     /**
      * Reflection with respect to the plane Y=0

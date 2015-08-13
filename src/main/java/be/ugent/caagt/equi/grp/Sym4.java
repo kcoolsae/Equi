@@ -32,7 +32,6 @@ package be.ugent.caagt.equi.grp;
 import be.ugent.caagt.perm.Perm;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Symmetric group of order 4.

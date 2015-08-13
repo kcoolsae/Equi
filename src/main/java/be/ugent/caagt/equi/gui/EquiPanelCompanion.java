@@ -38,7 +38,6 @@ import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.fx.SimpleGraphView3D;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Point3D;
 import javafx.scene.control.*;
@@ -89,12 +88,14 @@ public class EquiPanelCompanion {
 
     public ProgressBar progressBar;
 
+    @SuppressWarnings("deprecation")
     public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
         this.graph = symmetries.getGraph();
         this.group = symmetries.getGroup();
         this.stage = stage;
         stage.setOnCloseRequest(e -> {
             if (longTaskThread != null) {
+                //noinspection deprecation
                 longTaskThread.stop(); // :-( I see no other solution except forking the jvm...
             }
         });
