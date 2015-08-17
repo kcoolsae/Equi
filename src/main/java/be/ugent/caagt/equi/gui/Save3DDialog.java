@@ -31,6 +31,7 @@ package be.ugent.caagt.equi.gui;
 
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import be.ugent.caagt.equi.io.GraphOutputStream;
+import be.ugent.caagt.equi.io.ObjGraphOutputStream;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
 import be.ugent.caagt.equi.io.WriteGraphOutputStream;
 import javafx.stage.FileChooser;
@@ -71,7 +72,8 @@ public class Save3DDialog {
 
     public enum OutputType {
         WRITE_GRAPH("WriteGraph3D files", "*.w3d"),
-        SPINPUT("Spinput files", "*.spinput");
+        SPINPUT("Spinput files", "*.spinput"),
+        OBJ("OBJ files", "*.obj");
 
         private String caption;
 
@@ -110,7 +112,8 @@ public class Save3DDialog {
             try (FileOutputStream out = new FileOutputStream(file);
                  GraphOutputStream gos =
                          type == OutputType.WRITE_GRAPH ? new WriteGraphOutputStream(out, 3)
-                                 : new SpinputOutputStream(out, spinputAtomicNumber, spinputScaleFactor)
+                                 : type == OutputType.SPINPUT ? new SpinputOutputStream(out, spinputAtomicNumber, spinputScaleFactor)
+                                 : new ObjGraphOutputStream(out)
             ) {
                 gos.writeGraph(graph);
                 lastFile = file;

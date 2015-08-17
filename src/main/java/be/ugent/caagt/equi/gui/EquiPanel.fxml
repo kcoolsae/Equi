@@ -69,6 +69,7 @@
                         </ChoiceBox>
                         <Label text="Scale:"/>
                         <TextField fx:id="scaleFactor" prefWidth="45"/>
+                        <Button mnemonicParsing="false" text="Save (obj)" onAction="#doSaveObj"/>
                     </HBox>
                 </VBox>
             </TitledPane>
