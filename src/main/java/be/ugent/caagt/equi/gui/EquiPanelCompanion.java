@@ -38,7 +38,6 @@ import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.fx.SimpleGraphView3D;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
-import javafx.concurrent.Task;
 import javafx.geometry.Point3D;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
@@ -88,15 +87,16 @@ public class EquiPanelCompanion {
 
     public ProgressBar progressBar;
 
+    private EquiPanelLongTask longTask;
+
     @SuppressWarnings("deprecation")
     public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
         this.graph = symmetries.getGraph();
         this.group = symmetries.getGroup();
         this.stage = stage;
         stage.setOnCloseRequest(e -> {
-            if (longTaskThread != null) {
-                //noinspection deprecation
-                longTaskThread.stop(); // :-( I see no other solution except forking the jvm...
+            if (longTask != null) {
+                longTask.kill();
             }
         });
     }
@@ -302,57 +302,9 @@ public class EquiPanelCompanion {
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.OBJ);
     }
 
-    private Thread longTaskThread;
-
     private void runAsLongTask(Runnable runnable) {
-        longTaskThread = new Thread(new LongTask(runnable));
-        longTaskThread.setDaemon(true);
-        longTaskThread.start();
-    }
-
-    /**
-     * Task that takes potentially a long time to run. Before starting the GUI is disabled and
-     * a progress bar is shown. At the end the progress bar is hidden and the GUI is restored.
-     */
-
-    class LongTask extends Task<Void> {
-
-        private Runnable runnable;
-
-        LongTask(Runnable runnable) {
-            this.runnable = runnable;
-        }
-
-        @Override
-        protected Void call() throws Exception {
-            runnable.run();
-            return null;
-        }
-
-        @Override
-        protected void running() {
-            leftPane.setDisable(true);
-            progressBar.setVisible(true);
-        }
-
-        @Override
-        protected void succeeded() {
-            progressBar.setVisible(false);
-            leftPane.setDisable(false);
-            longTaskThread = null;
-            showPolyhedron();
-        }
-
-        @Override
-        protected void failed() {
-            succeeded();
-        }
-
-        @Override
-        protected void cancelled() {
-            succeeded();
-        }
-
+        longTask = new EquiPanelLongTask(this, runnable);
+        longTask.runInThread();
     }
 
 }
