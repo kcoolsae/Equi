@@ -57,7 +57,6 @@ public class PlanarizationEngine {
         for (int i = 0; i < variables.length; i++) {
             variables[i] = 3.0 * RG.nextDouble() - 1.5;
         }
-
     }
 
     private void initCoordinatesFromGraph(EmbeddedPlanarGraph graph) {
@@ -167,28 +166,36 @@ public class PlanarizationEngine {
         return coordinates;
     }
 
-    public void singleStep() {
+    public void singleStep(StepListener sl) {
         variables = solver.step(variables);
         group.symmetrize(variables);
+        sl.step(1, solver.getAccuracy()); //
         center();
     }
 
-    public void timedStep(long milliseconds) {
+    public void timedStep(long milliseconds, StepListener sl) {
         long time = System.currentTimeMillis();
-        double ac = solver.computeAccuracy(variables);
+        double initialAccuracy = solver.computeAccuracy(variables);
         variables = solver.step(variables);
         group.symmetrize(variables);
-        while (solver.getAccuracy() > ac * 1.0e-8 && System.currentTimeMillis() < time + milliseconds) {
+        double accuracy = solver.getAccuracy();
+        sl.step(1, accuracy);
+        int count = 1;
+        while (accuracy > initialAccuracy * 1.0e-8 && System.currentTimeMillis() < time + milliseconds) {
             variables = solver.step(variables);
             group.symmetrize(variables);
+            count ++;
+            accuracy = solver.getAccuracy();
+            sl.step(count, accuracy);
         }
         center();
     }
 
-    public void multipleSteps(int count) {
+    public void multipleSteps(int count, StepListener sl) {
         for (int i = 0; i < count; i++) {
             variables = solver.step(variables);
             group.symmetrize(variables);
+            sl.step(i+1, solver.getAccuracy());
         }
         center();
     }

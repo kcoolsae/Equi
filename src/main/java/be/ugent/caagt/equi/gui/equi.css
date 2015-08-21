@@ -34,3 +34,20 @@ FlowPane {
 ProgressBar {
   -fx-padding: 10;
 }
+
+#progressPane {
+  -fx-padding: 10;
+  -fx-spacing: 10;
+  -fx-border-color: red;
+  -fx-border-width: 2px;
+  -fx-border-radius: 5px;
+
+  -fx-base: pink;
+}
+
+#progressLabel {
+}
+
+#progressCaption {
+  -fx-font-weight: bold;
+}

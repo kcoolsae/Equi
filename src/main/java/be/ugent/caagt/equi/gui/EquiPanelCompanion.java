@@ -31,6 +31,7 @@ package be.ugent.caagt.equi.gui;
 
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import be.ugent.caagt.equi.engine.PlanarizationEngine;
+import be.ugent.caagt.equi.engine.StepListener;
 import be.ugent.caagt.equi.fx.Polyhedron;
 import be.ugent.caagt.equi.grp.CombinatorialGroup;
 import be.ugent.caagt.equi.grp.CombinedGroup;
@@ -48,6 +49,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -63,6 +65,7 @@ public class EquiPanelCompanion {
     public Label nrOfFaces;
 
     public VBox groupPane;
+    public VBox commandPane;
 
     public SimpleGraphView3D view3D;
 
@@ -85,7 +88,9 @@ public class EquiPanelCompanion {
 
     public VBox leftPane;
 
+    public VBox progressPane;
     public ProgressBar progressBar;
+    public Label progressLabel;
 
     private EquiPanelLongTask longTask;
 
@@ -224,23 +229,23 @@ public class EquiPanelCompanion {
     }
 
     public void doSingleStep() {
-        runAsLongTask(engine::singleStep);
+        runAsLongTask(c -> engine.singleStep(c));
     }
 
     public void doRun() {
-        runAsLongTask(() -> engine.timedStep(2000L));
+        runAsLongTask(c -> engine.timedStep(2000L, c));
     }
 
     public void doLongRun() {
-        runAsLongTask(() -> engine.timedStep(15000L));
+        runAsLongTask(c -> engine.timedStep(15000L, c));
     }
 
     public void do5steps() {
-        runAsLongTask(() -> engine.multipleSteps(5));
+        runAsLongTask(c -> engine.multipleSteps(5, c));
     }
 
     public void do10steps() {
-        runAsLongTask(() -> engine.multipleSteps(10));
+        runAsLongTask(c -> engine.multipleSteps(10, c));
     }
 
     public void doInflate() {
@@ -302,9 +307,14 @@ public class EquiPanelCompanion {
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.OBJ);
     }
 
-    private void runAsLongTask(Runnable runnable) {
-        longTask = new EquiPanelLongTask(this, runnable);
+    private void runAsLongTask(Consumer<StepListener> consumer) {
+        longTask = new EquiPanelLongTask(this, consumer);
         longTask.runInThread();
+    }
+
+    public void setDisable(boolean disabled) {
+        groupPane.setDisable(disabled);
+        commandPane.setDisable(disabled);
     }
 
 }

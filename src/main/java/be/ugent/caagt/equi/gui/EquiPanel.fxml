@@ -11,31 +11,40 @@
         <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
               stylesheets="@equi.css" fx:id="leftPane">
             <TitledPane animated="false" text="Graph Properties">
-                <VBox prefWidth="500.0">
-                    <HBox>
-                        <Label styleClass="caption" text="Nr. Vertices"/>
-                        <Label styleClass="number" fx:id="nrOfVertices" text="??"/>
-                    </HBox>
-                    <HBox>
-                        <Label styleClass="caption" text="Nr. Edges"/>
-                        <Label styleClass="number" fx:id="nrOfEdges" text="??"/>
-                    </HBox>
-                    <HBox>
-                        <Label styleClass="caption" text="Nr. Faces"/>
-                        <Label styleClass="number" fx:id="nrOfFaces" text="??"/>
-                    </HBox>
-                    <HBox>
-                        <Label styleClass="caption" text="Accuracy"/>
-                        <Label styleClass="number" fx:id="accuracy" text="??"/>
-                    </HBox>
-                </VBox>
+                <HBox>
+                    <VBox prefWidth="250.0">
+                        <HBox>
+                            <Label styleClass="caption" text="Nr. Vertices"/>
+                            <Label styleClass="number" fx:id="nrOfVertices" text="??"/>
+                        </HBox>
+                        <HBox>
+                            <Label styleClass="caption" text="Nr. Edges"/>
+                            <Label styleClass="number" fx:id="nrOfEdges" text="??"/>
+                        </HBox>
+                        <HBox>
+                            <Label styleClass="caption" text="Nr. Faces"/>
+                            <Label styleClass="number" fx:id="nrOfFaces" text="??"/>
+                        </HBox>
+                        <HBox>
+                            <Label styleClass="caption" text="Accuracy"/>
+                            <Label styleClass="number" fx:id="accuracy" text="??"/>
+                        </HBox>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/> <!-- spacer -->
+                    <VBox fx:id="progressPane" prefWidth="250.0" visible="false">
+                        <Label id="progressCaption" text="Calculating..."/>
+                        <!-- <ProgressBar fx:id="progressBar" progress="-1"/> progress bar removed: there is a bug with animation -->
+                        <Label fx:id="progressLabel"/>
+                        <!-- TODO <Button text="Interrupt"/> -->
+                    </VBox>
+                </HBox>
             </TitledPane>
             <TitledPane text="Symmetry groups">
                 <VBox fx:id="groupPane" prefWidth="500.0">
                 </VBox>
             </TitledPane>
             <TitledPane text="Commands">
-                <VBox>
+                <VBox fx:id="commandPane">
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
                         <Button mnemonicParsing="false" text="Random" onAction="#doRandomLarge"/>
                         <Button mnemonicParsing="false" text="Perturb" onAction="#doRandom"/>
@@ -76,10 +85,7 @@
         </VBox>
     </left>
     <center>
-        <StackPane>
-            <SimpleGraphView3D fx:id="view3D" BorderPane.alignment="CENTER">
-            </SimpleGraphView3D>
-            <ProgressBar fx:id="progressBar" progress="-1" visible="false" StackPane.alignment="TOP_LEFT"/>
-        </StackPane>
+        <SimpleGraphView3D fx:id="view3D" BorderPane.alignment="CENTER">
+        </SimpleGraphView3D>
     </center>
 </BorderPane>
