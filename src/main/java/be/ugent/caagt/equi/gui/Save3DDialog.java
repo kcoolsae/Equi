@@ -30,16 +30,14 @@
 package be.ugent.caagt.equi.gui;
 
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
-import be.ugent.caagt.equi.io.GraphOutputStream;
-import be.ugent.caagt.equi.io.ObjGraphOutputStream;
-import be.ugent.caagt.equi.io.SpinputOutputStream;
-import be.ugent.caagt.equi.io.WriteGraphOutputStream;
+import be.ugent.caagt.equi.io.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,7 +71,8 @@ public class Save3DDialog {
     public enum OutputType {
         WRITE_GRAPH("WriteGraph3D files", "*.w3d"),
         SPINPUT("Spinput files", "*.spinput"),
-        OBJ("OBJ files", "*.obj");
+        OBJ("OBJ files", "*.obj"),
+        OFF("OFF files", "*.off");
 
         private String caption;
 
@@ -100,6 +99,21 @@ public class Save3DDialog {
         return chooser;
     }
 
+    private GraphOutputStream getStream(OutputStream out, OutputType ot) throws IOException {
+        switch (ot) {
+            case WRITE_GRAPH:
+                return  new WriteGraphOutputStream(out, 3);
+            case SPINPUT:
+                return  new SpinputOutputStream(out, spinputAtomicNumber, spinputScaleFactor);
+            case OBJ:
+                return new ObjGraphOutputStream(out);
+            case OFF:
+                return new OffGraphOutputStream(out);
+            default:
+                return null;
+        }
+    }
+
     public void save(EmbeddedPlanarGraph graph, OutputType type) {
         FileChooser chooser = getChooser();
         chooser.getExtensionFilters().clear();
@@ -110,10 +124,7 @@ public class Save3DDialog {
         File file = chooser.showSaveDialog(owner);
         if (file != null) {
             try (FileOutputStream out = new FileOutputStream(file);
-                 GraphOutputStream gos =
-                         type == OutputType.WRITE_GRAPH ? new WriteGraphOutputStream(out, 3)
-                                 : type == OutputType.SPINPUT ? new SpinputOutputStream(out, spinputAtomicNumber, spinputScaleFactor)
-                                 : new ObjGraphOutputStream(out)
+                 GraphOutputStream gos = getStream(out, type)
             ) {
                 gos.writeGraph(graph);
                 lastFile = file;

@@ -62,7 +62,11 @@
                     </HBox>
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
                         <Button mnemonicParsing="false" text="Save (w3d)" onAction="#doSave"/>
-                        <Region minWidth="20"/> <!-- spacer -->
+                        <Button mnemonicParsing="false" text="Save (obj)" onAction="#doSaveObj"/>
+                        <Button mnemonicParsing="false" text="Save (OFF)" onAction="#doSaveOff"/>
+                    </HBox>
+                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                        <!-- <Region minWidth="20"/>  spacer -->
                         <Button mnemonicParsing="false" text="Save (spinput)" onAction="#doSaveSpinput"/>
                         <ChoiceBox fx:id="atomicNumber">
                             <String fx:value="1 H"/>
@@ -78,7 +82,6 @@
                         </ChoiceBox>
                         <Label text="Scale:"/>
                         <TextField fx:id="scaleFactor" prefWidth="45"/>
-                        <Button mnemonicParsing="false" text="Save (obj)" onAction="#doSaveObj"/>
                     </HBox>
                 </VBox>
             </TitledPane>

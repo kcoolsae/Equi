@@ -307,6 +307,10 @@ public class EquiPanelCompanion {
         saveDialog.save(exportGraph(), Save3DDialog.OutputType.OBJ);
     }
 
+    public void doSaveOff() {
+        saveDialog.save(exportGraph(), Save3DDialog.OutputType.OFF);
+    }
+
     private void runAsLongTask(Consumer<StepListener> consumer) {
         longTask = new EquiPanelLongTask(this, consumer);
         longTask.runInThread();
