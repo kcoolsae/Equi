@@ -214,7 +214,7 @@ public class GroupResolver {
                 Perm b = permutations[2];
                 Perm ab = a.mul(b);
                 int pos = 3;
-                while (!permutations[pos].equals(ab)) {
+                while (permutations[pos].equals(ab)) {
                     pos++;
                 }
                 group = new Cubed2(degree, a, b, permutations[pos]);
