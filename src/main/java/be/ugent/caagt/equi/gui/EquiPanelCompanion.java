@@ -32,13 +32,13 @@ package be.ugent.caagt.equi.gui;
 import be.ugent.caagt.equi.EmbeddedPlanarGraph;
 import be.ugent.caagt.equi.engine.PlanarizationEngine;
 import be.ugent.caagt.equi.engine.StepListener;
-import be.ugent.caagt.equi.fx.Polyhedron;
 import be.ugent.caagt.equi.grp.CombinatorialGroup;
 import be.ugent.caagt.equi.grp.CombinedGroup;
 import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
-import be.ugent.caagt.equi.fx.SimpleGraphView3D;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
+import be.ugent.caagt.graph3d.Graph3D;
+import be.ugent.caagt.graph3d.SimpleGraphView3D;
 import javafx.geometry.Point3D;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
@@ -190,7 +190,7 @@ public class EquiPanelCompanion {
                 }
             }
         }
-        Polyhedron poly = new Polyhedron();
+        Graph3D poly = new Graph3D();
         List<Point3D> vertices = new ArrayList<>();
         for (int i = 0; i < coordinates.length; i++) {
             double[] coordinate = coordinates[i];
