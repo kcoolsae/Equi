@@ -37,8 +37,12 @@ import be.ugent.caagt.equi.grp.CombinedGroup;
 import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
+import be.ugent.caagt.equi.undoredo.UndoInfo;
+import be.ugent.caagt.equi.undoredo.UndoManager;
+import be.ugent.caagt.equi.undoredo.UndoStepInfo;
 import be.ugent.caagt.graph3d.Graph3D;
 import be.ugent.caagt.graph3d.SimpleGraphView3D;
+import javafx.beans.Observable;
 import javafx.geometry.Point3D;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
@@ -58,6 +62,12 @@ import java.util.prefs.Preferences;
  */
 public class EquiPanelCompanion {
 
+    // TODO: refactor this - some stuff is stored both in the engine and in the undo manager
+
+    // TODO: undo group choice
+
+    // TODO: store accuracy with undo
+
     public Label nrOfVertices;
 
     public Label nrOfEdges;
@@ -70,7 +80,7 @@ public class EquiPanelCompanion {
     public SimpleGraphView3D view3D;
 
 
-    private PlanarizationEngine engine;
+    PlanarizationEngine engine;
 
     private Stage stage;
 
@@ -98,6 +108,9 @@ public class EquiPanelCompanion {
     public EquiPanelCompanion(Symmetries symmetries, Stage stage) {
         this.graph = symmetries.getGraph();
         this.group = symmetries.getGroup();
+
+        this.undoManager = new UndoManager();
+
         this.stage = stage;
         stage.setOnCloseRequest(e -> {
             if (longTask != null) {
@@ -167,12 +180,37 @@ public class EquiPanelCompanion {
         this.saveDialog = new Save3DDialog(stage);
 
         //
+        undoManager.addListener(this::undoManagerInvalidated);
+        undoManager.addCommand();
+        undoManager.addStep(new UndoStepInfo(engine.getCoordinates(), engine.computeAccuracy()));
         showPolyhedron();
     }
 
-    public void showPolyhedron() {
-        // coincident points are colored in red
+    /**
+     * Show polyhedron and store it onto the undo stack
+     */
+    public void commandFinished() {
         double[][] coordinates = engine.getCoordinates();
+        double accuracyValue = engine.computeAccuracy();
+        undoManager.addCommand();
+        undoManager.addStep(new UndoStepInfo(coordinates, accuracyValue));
+        showPolyhedron(coordinates, accuracyValue);
+    }
+
+    public void showPolyhedron() {
+        showPolyhedron(engine.getCoordinates(), engine.computeAccuracy());
+    }
+
+    private double[][] coordinatesShown;
+
+    private double accuracyShown;
+
+    private void showPolyhedron(double[][] coordinates, double accuracyValue) {
+
+        this.coordinatesShown = coordinates;
+        this.accuracyShown = accuracyValue;
+
+        // coincident points are colored in red
         boolean[] coincident = new boolean[coordinates.length];
 
         // maybe we should to this faster?
@@ -213,19 +251,19 @@ public class EquiPanelCompanion {
 
         view3D.reset();
         view3D.add(poly);
-        accuracy.setText(String.format("% 7.5g", engine.computeAccuracy()));
+        accuracy.setText(String.format("% 7.5g", accuracyValue));
     }
 
 
     public void doRandom() {
         engine.randomPerturbation(0.2);
-        showPolyhedron();
+        commandFinished();
     }
 
     public void doRandomLarge() {
         engine.initRandomCoordinates();
         engine.randomPerturbation(5.0);
-        showPolyhedron();
+        commandFinished();
     }
 
     public void doSingleStep() {
@@ -250,31 +288,31 @@ public class EquiPanelCompanion {
 
     public void doInflate() {
         engine.rescale(1.5);
-        showPolyhedron();
+        commandFinished();
     }
 
 
     public void doSkew() {
         engine.skew();
-        showPolyhedron();
+        commandFinished();
     }
 
     public void doSymmetrize() {
         engine.symmetrize();
-        showPolyhedron();
+        commandFinished();
     }
 
     public void doSphere() {
         engine.onSphere();
-        showPolyhedron();
+        commandFinished();
     }
 
     /**
      * Export the current solution as a planar graph.
      */
     private EmbeddedPlanarGraph exportGraph() {
-        double[][] coordinates = engine.getCoordinates();
-        return new EmbeddedPlanarGraph(graph, coordinates);
+        // TODO:
+        return new EmbeddedPlanarGraph(graph, coordinatesShown);
     }
 
 
@@ -321,4 +359,49 @@ public class EquiPanelCompanion {
         commandPane.setDisable(disabled);
     }
 
+    UndoManager undoManager;
+
+    public Button buttonUndo;
+    public Button buttonUndoStep;
+    public Button buttonRedo;
+    public Button buttonRedoStep;
+
+    /**
+     * Called when the undo manager is invalidated
+     */
+    private void undoManagerInvalidated (Observable o) {
+        buttonUndo.setDisable(! undoManager.canUndo());
+        buttonRedo.setDisable(! undoManager.canRedo());
+        buttonUndoStep.setDisable(! undoManager.canUndoStep());
+        buttonRedoStep.setDisable(! undoManager.canRedoStep());
+    }
+
+    public void doUndo() {
+        UndoInfo info = undoManager.undo();
+        if (info != null) {
+            showPolyhedron(info.getCoordinates(), info.getAccuracy());
+        }
+
+    }
+
+    public void doRedo() {
+        UndoInfo info = undoManager.redo();
+        if (info != null) {
+            showPolyhedron(info.getCoordinates(), info.getAccuracy());
+        }
+    }
+
+    public void doUndoStep() {
+        UndoStepInfo info = undoManager.undoStep();
+        if (info != null) {
+            showPolyhedron(info.getCoordinates(), info.getAccuracy());
+        }
+    }
+
+    public void doRedoStep() {
+        UndoStepInfo info = undoManager.redoStep();
+        if (info != null) {
+            showPolyhedron(info.getCoordinates(), info.getAccuracy());
+        }
+    }
 }

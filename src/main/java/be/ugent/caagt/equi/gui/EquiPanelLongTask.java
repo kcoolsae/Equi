@@ -30,6 +30,7 @@
 package be.ugent.caagt.equi.gui;
 
 import be.ugent.caagt.equi.engine.StepListener;
+import be.ugent.caagt.equi.undoredo.UndoStepInfo;
 import javafx.concurrent.Task;
 
 import java.util.function.Consumer;
@@ -113,5 +114,10 @@ class EquiPanelLongTask extends Task<Void> implements StepListener {
     public void step(int number, double accuracy) {
         updateMessage(String.format("% 7.5g", accuracy));
         this.stepCount = number;
+        equiPanelCompanion.undoManager.addStep(
+                new UndoStepInfo(
+                        equiPanelCompanion.engine.getCoordinates(),
+                        equiPanelCompanion.engine.computeAccuracy()
+                ));
     }
 }

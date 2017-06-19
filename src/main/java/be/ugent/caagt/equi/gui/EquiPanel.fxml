@@ -83,6 +83,12 @@
                         <Label text="Scale:"/>
                         <TextField fx:id="scaleFactor" prefWidth="45"/>
                     </HBox>
+                    <HBox>
+                         <Button mnemonicParsing="false" text="Undo" fx:id="buttonUndo" onAction="#doUndo"/>
+                        <Button mnemonicParsing="false" text="Redo" fx:id="buttonRedo" onAction="#doRedo"/>
+                        <Button mnemonicParsing="false" text="Undo step" fx:id="buttonUndoStep" onAction="#doUndoStep"/>
+                        <Button mnemonicParsing="false" text="Redo step" fx:id="buttonRedoStep" onAction="#doRedoStep"/>
+                    </HBox>
                 </VBox>
             </TitledPane>
         </VBox>
