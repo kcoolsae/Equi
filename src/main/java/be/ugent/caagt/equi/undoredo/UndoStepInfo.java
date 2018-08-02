@@ -4,7 +4,7 @@ package be.ugent.caagt.equi.undoredo;
  * Stores information needed to undo or redo a single step
  */
 
-public class UndoStepInfo {
+public class UndoStepInfo implements Info {
 
     private double[][] coordinates;
 

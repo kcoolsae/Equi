@@ -37,6 +37,7 @@ import be.ugent.caagt.equi.grp.CombinedGroup;
 import be.ugent.caagt.equi.grp.Symmetries;
 import be.ugent.caagt.equi.PlanarGraph;
 import be.ugent.caagt.equi.io.SpinputOutputStream;
+import be.ugent.caagt.equi.undoredo.Info;
 import be.ugent.caagt.equi.undoredo.UndoInfo;
 import be.ugent.caagt.equi.undoredo.UndoManager;
 import be.ugent.caagt.equi.undoredo.UndoStepInfo;
@@ -82,15 +83,15 @@ public class EquiPanelCompanion {
 
     PlanarizationEngine engine;
 
-    private Stage stage;
+    private final Stage stage;
 
     public Save3DDialog saveDialog;
 
     public Label accuracy;
 
-    private PlanarGraph graph;
+    private final PlanarGraph graph;
 
-    private CombinatorialGroup group;
+    private final CombinatorialGroup group;
 
     public ChoiceBox<String> atomicNumber;
 
@@ -203,13 +204,9 @@ public class EquiPanelCompanion {
 
     private double[][] coordinatesShown;
 
-    private double accuracyShown;
-
     private void showPolyhedron(double[][] coordinates, double accuracyValue) {
 
         this.coordinatesShown = coordinates;
-        this.accuracyShown = accuracyValue;
-
         // coincident points are colored in red
         boolean[] coincident = new boolean[coordinates.length];
 
@@ -359,7 +356,7 @@ public class EquiPanelCompanion {
         commandPane.setDisable(disabled);
     }
 
-    UndoManager undoManager;
+    final UndoManager undoManager;
 
     public Button buttonUndo;
     public Button buttonUndoStep;
@@ -376,32 +373,31 @@ public class EquiPanelCompanion {
         buttonRedoStep.setDisable(! undoManager.canRedoStep());
     }
 
+    private void processUndoInfo(Info info) {
+        if (info != null) {
+            double[][] coordinates = info.getCoordinates();
+            engine.setCoordinates(coordinates);
+            showPolyhedron(coordinates, info.getAccuracy());
+        }
+    }
+
     public void doUndo() {
         UndoInfo info = undoManager.undo();
-        if (info != null) {
-            showPolyhedron(info.getCoordinates(), info.getAccuracy());
-        }
-
+        processUndoInfo(info);
     }
 
     public void doRedo() {
         UndoInfo info = undoManager.redo();
-        if (info != null) {
-            showPolyhedron(info.getCoordinates(), info.getAccuracy());
-        }
+        processUndoInfo(info);
     }
 
     public void doUndoStep() {
         UndoStepInfo info = undoManager.undoStep();
-        if (info != null) {
-            showPolyhedron(info.getCoordinates(), info.getAccuracy());
-        }
+        processUndoInfo(info);
     }
 
     public void doRedoStep() {
         UndoStepInfo info = undoManager.redoStep();
-        if (info != null) {
-            showPolyhedron(info.getCoordinates(), info.getAccuracy());
-        }
+        processUndoInfo(info);
     }
 }

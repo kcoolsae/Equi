@@ -166,6 +166,12 @@ public class PlanarizationEngine {
         return coordinates;
     }
 
+    public void setCoordinates(double[][] coordinates) {
+        for (int i = 0; i < coordinates.length; i++) {
+            System.arraycopy( coordinates[i], 0, variables, 3 * i, 3);
+        }
+    }
+
     public void singleStep(StepListener sl) {
         variables = solver.step(variables);
         group.symmetrize(variables);
