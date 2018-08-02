@@ -40,16 +40,13 @@ import java.util.Collection;
  */
 public class Dih10 extends AbstractCombinatorialGroup {
 
-    private Perm g5i;
+    private final Perm g5i;
 
-    private Perm g2;
-
-    private Perm[] mirrors;
+    private final Perm[] mirrors;
 
     public Dih10(int degree, Perm g5i, Perm g2) {
         super(20, degree);
         this.g5i = g5i;
-        this.g2 = g2;
         mirrors = new Perm[]{g2, g2.mul(g5i)};
     }
 

@@ -63,11 +63,18 @@ public class DoubleAlt4 extends AbstractCombinatorialGroup {
         Perm g3 = g3i.mul(i);
         Perm g2star = g2.conj(g3i);
         return Arrays.asList(
-                 this,
-                 new Alt4(degree, g3, g2),
-                 new Cubed2(degree, g2, g2star, i),
-                 new Cyclic (degree, g3i)
-         );
+                this,
+                new Alt4(degree, g3, g2),
+                new Cubed2(degree, g2, g2star, i),
+                new Z6(degree, g3.mul(i)),
+                new Squared2(degree, g2, g2star),
+                new Squared2(degree, g2, g2star.mul(i)),
+                new Squared2(degree, g2, i),
+                new Z3(degree, g3),
+                new Z2(degree, g2),
+                new Z2(degree, g2.mul(i)),
+                new Z2(degree, i)
+        );
     }
 
     @Override

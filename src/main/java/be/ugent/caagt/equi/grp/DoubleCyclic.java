@@ -75,7 +75,7 @@ public class DoubleCyclic extends AbstractCombinatorialGroup {
                         Arrays.asList(ExtendedPerm.rotation(gen, d),
                                 new ExtendedPerm(invol, PointGroupElement.REFLECT_H))
                 ));
-                list.add(new CombinedGroup("C" + num(order / 2, d) + "h'", order, degree,
+                list.add(new CombinedGroup("C" + num(order / 2, d) + "h", order, degree,
                          Arrays.asList(ExtendedPerm.rotation(gen, d),
                                  new ExtendedPerm(otherInvol, PointGroupElement.REFLECT_H))
                  ));

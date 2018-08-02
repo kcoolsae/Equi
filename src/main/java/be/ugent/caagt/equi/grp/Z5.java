@@ -61,12 +61,12 @@ public class Z5 extends AbstractCombinatorialGroup {
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
         return Arrays.asList(
-                new CombinedGroup("C5", order, degree,
-                        Collections.singleton(ExtendedPerm.rotation(g5, 1))
-                ),
-                new CombinedGroup("C5/3", order, degree,
-                        Collections.singleton(ExtendedPerm.rotation(g5, 3))
-                )
+                new CombinedGroup("C5", order, degree, Arrays.asList(
+                        new ExtendedPerm(g5, PointGroupElement.ROT_5)
+                )),
+                new CombinedGroup("C5/2", order, degree, Arrays.asList(
+                        new ExtendedPerm(g5, PointGroupElement.ROT_5_STAR)
+                ))
         );
     }
 }

@@ -50,13 +50,19 @@ public class Dih6 extends AbstractCombinatorialGroup {
 
     @Override
     public String toString() {
-        return "Dih(6)";
+        return "2Sym(3)";
     }
 
     @Override
     public Iterable<CombinatorialGroup> getSubgroups() {
+        Perm i = g3i.pow(3);
+        Perm g3 = g3i.mul(i);
         return Arrays.asList(
-                new Cyclic(degree, g3i) // TODO
+                new Z6(degree, g3i),
+                new Sym3Ico(degree, g3, g2prime),
+                new Squared2(degree, g2prime, i),
+                new Z3(degree, g3),
+                new Z2(degree, i)
         );
     }
 

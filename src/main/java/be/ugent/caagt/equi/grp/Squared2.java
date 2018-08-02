@@ -1,27 +1,27 @@
 /* Squared2.java
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Copyright Ⓒ 2015 Universiteit Gent
- * 
+ *
  * This file is part of the Equi application
- * 
+ *
  * Corresponding author (see also file AUTHORS)
- * 
+ *
  * Kris Coolsaet
  * Department of Applied Mathematics, Computer Science and Statistics
- * Ghent University 
+ * Ghent University
  * Krijgslaan 281-S9
  * B-9000 GENT Belgium
- * 
+ *
  * The Equi application is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The Equi Application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with the Equi Application (file LICENSE in the distribution).  If not,
  * see http://www.gnu.org/licenses/.
@@ -66,15 +66,38 @@ public class Squared2 extends AbstractCombinatorialGroup {
         );
     }
 
+    private void addC2v(Collection<CombinedGroup> list, Perm c2, Perm cs) {
+        list.add(new CombinedGroup("C2v", order, degree,
+                Arrays.asList(new ExtendedPerm(c2, PointGroupElement.ROT_G2),
+                        new ExtendedPerm(cs, PointGroupElement.ROT_G2STAR.minus()))
+        ));
+    }
+
+    private void addC2h(Collection<CombinedGroup> list, Perm c2, Perm ci) {
+        list.add(new CombinedGroup("C2h", order, degree,
+                Arrays.asList(new ExtendedPerm(c2, PointGroupElement.ROT_G2),
+                        new ExtendedPerm(ci, PointGroupElement.MINUS_ONE))
+        ));
+    }
+
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
         Collection<CombinedGroup> list = new ArrayList<>();
-        list.add (new CombinedGroup("D2", order, degree,
+        list.add(new CombinedGroup("D2", order, degree,
                 Arrays.asList(new ExtendedPerm(g, PointGroupElement.ROT_G2),
                         new ExtendedPerm(h, PointGroupElement.ROT_G2STAR)))
         );
-        // TODO add 3x C2v
-        // TODO add 6x C2h
+
+        addC2v(list, g, h);
+        addC2v(list, h, g);
+        addC2v(list, g.mul(h), g);
+
+        addC2h(list, g, h);
+        addC2h(list, h, g);
+        addC2h(list, g.mul(h), g);
+        addC2h(list, g.mul(h), h);
+        addC2h(list, g, g.mul(h));
+        addC2h(list, h, g.mul(h));
 
         return list;
     }

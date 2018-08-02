@@ -123,7 +123,13 @@ public class PointGroupElement {
     public static final PointGroupElement REFLECT_H =
             new PointGroupElement(new double[][]{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}});
 
-   private static final double PHI = 0.5 * (1.0 + Math.sqrt(5.0));
+    /**
+     * Reflection interchanging XY and YZ plane
+     */
+    public static final PointGroupElement REFLECT_R =
+            new PointGroupElement(new double[][]{{0, 0, 1}, {0, 1, 0}, {1, 0, 0}});
+
+    private static final double PHI = 0.5 * (1.0 + Math.sqrt(5.0));
 
     /**
      * Rotation of order 5 in standard orientation for the icosahedron
@@ -153,6 +159,16 @@ public class PointGroupElement {
                 {0.5, -0.5 * PHI, 0.5 / PHI},
                 {0.5 * PHI, 0.5 / PHI, -0.5},
                 {0.5 / PHI, 0.5, 0.5 * PHI}
+            });
+
+    /**
+     * Conjugate of {@link #REFLECT_PHI}
+     */
+    public static final PointGroupElement REFLECT_PHI_STAR =
+            new PointGroupElement(new double[][]{
+                    {0.5 / PHI, -0.5, -0.5 * PHI},
+                    {-0.5, -0.5 * PHI, 0.5 / PHI},
+                    {- 0.5 * PHI, 0.5 / PHI, -0.5}
             });
 
     /**

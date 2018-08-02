@@ -1,101 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import java.lang.String?>
 <?import be.ugent.caagt.graph3d.SimpleGraphView3D?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="-1.0" prefWidth="-1.0" stylesheets="@equi.css"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" stylesheets="@equi.css" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1">
     <left>
-        <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-              stylesheets="@equi.css" fx:id="leftPane">
+        <VBox fx:id="leftPane" stylesheets="@equi.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
             <TitledPane animated="false" text="Graph Properties">
                 <HBox>
                     <VBox prefWidth="250.0">
                         <HBox>
-                            <Label styleClass="caption" text="Nr. Vertices"/>
-                            <Label styleClass="number" fx:id="nrOfVertices" text="??"/>
+                            <Label styleClass="caption" text="Nr. Vertices" />
+                            <Label fx:id="nrOfVertices" styleClass="number" text="??" />
                         </HBox>
                         <HBox>
-                            <Label styleClass="caption" text="Nr. Edges"/>
-                            <Label styleClass="number" fx:id="nrOfEdges" text="??"/>
+                            <Label styleClass="caption" text="Nr. Edges" />
+                            <Label fx:id="nrOfEdges" styleClass="number" text="??" />
                         </HBox>
                         <HBox>
-                            <Label styleClass="caption" text="Nr. Faces"/>
-                            <Label styleClass="number" fx:id="nrOfFaces" text="??"/>
+                            <Label styleClass="caption" text="Nr. Faces" />
+                            <Label fx:id="nrOfFaces" styleClass="number" text="??" />
                         </HBox>
                         <HBox>
-                            <Label styleClass="caption" text="Accuracy"/>
-                            <Label styleClass="number" fx:id="accuracy" text="??"/>
+                            <Label styleClass="caption" text="Accuracy" />
+                            <Label fx:id="accuracy" styleClass="number" text="??" />
                         </HBox>
                     </VBox>
-                    <Region HBox.hgrow="ALWAYS"/> <!-- spacer -->
+                    <Region HBox.hgrow="ALWAYS" /> <!-- spacer -->
                     <VBox fx:id="progressPane" prefWidth="250.0" visible="false">
-                        <Label id="progressCaption" text="Calculating..."/>
+                        <Label id="progressCaption" text="Calculating..." />
                         <!-- <ProgressBar fx:id="progressBar" progress="-1"/> progress bar removed: there is a bug with animation -->
-                        <Label fx:id="progressLabel"/>
+                        <Label fx:id="progressLabel" />
                         <!-- TODO <Button text="Interrupt"/> -->
                     </VBox>
                 </HBox>
             </TitledPane>
-            <TitledPane text="Symmetry groups">
-                <VBox fx:id="groupPane" prefWidth="500.0">
-                </VBox>
+            <TitledPane text="Symmetry groups" VBox.vgrow="ALWAYS">
+                <ScrollPane prefHeight="410" hbarPolicy="NEVER" >
+                    <VBox fx:id="groupPane" prefWidth="500.0">
+                    </VBox>
+                </ScrollPane>
             </TitledPane>
             <TitledPane text="Commands">
                 <VBox fx:id="commandPane">
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
-                        <Button mnemonicParsing="false" text="Random" onAction="#doRandomLarge"/>
-                        <Button mnemonicParsing="false" text="Perturb" onAction="#doRandom"/>
-                        <Button mnemonicParsing="false" text="Inflate" onAction="#doInflate"/>
-                        <Button mnemonicParsing="false" text="Skew" onAction="#doSkew"/>
-                        <Button mnemonicParsing="false" text="Sphere" onAction="#doSphere"/>
+                        <Button mnemonicParsing="false" onAction="#doRandomLarge" text="Random" />
+                        <Button mnemonicParsing="false" onAction="#doRandom" text="Perturb" />
+                        <Button mnemonicParsing="false" onAction="#doInflate" text="Inflate" />
+                        <Button mnemonicParsing="false" onAction="#doSkew" text="Skew" />
+                        <Button mnemonicParsing="false" onAction="#doSphere" text="Sphere" />
                     </HBox>
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
-                        <Button mnemonicParsing="false" text="Run" onAction="#doRun"/>
-                        <Button mnemonicParsing="false" text="Long" onAction="#doLongRun"/>
-                        <Button mnemonicParsing="false" text="1 step" onAction="#doSingleStep"/>
-                        <Button mnemonicParsing="false" text="5 steps" onAction="#do5steps"/>
-                        <Button mnemonicParsing="false" text="10 steps" onAction="#do10steps"/>
-                        <Button mnemonicParsing="false" text="Symmetrize" onAction="#doSymmetrize"/>
+                        <Button mnemonicParsing="false" onAction="#doRun" text="Run" />
+                        <Button mnemonicParsing="false" onAction="#doLongRun" text="Long" />
+                        <Button mnemonicParsing="false" onAction="#doSingleStep" text="1 step" />
+                        <Button mnemonicParsing="false" onAction="#do5steps" text="5 steps" />
+                        <Button mnemonicParsing="false" onAction="#do10steps" text="10 steps" />
+                        <Button mnemonicParsing="false" onAction="#doSymmetrize" text="Symmetrize" />
                     </HBox>
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
-                        <Button mnemonicParsing="false" text="Save (w3d)" onAction="#doSave"/>
-                        <Button mnemonicParsing="false" text="Save (obj)" onAction="#doSaveObj"/>
-                        <Button mnemonicParsing="false" text="Save (OFF)" onAction="#doSaveOff"/>
+                        <Button mnemonicParsing="false" onAction="#doSave" text="Save (w3d)" />
+                        <Button mnemonicParsing="false" onAction="#doSaveObj" text="Save (obj)" />
+                        <Button mnemonicParsing="false" onAction="#doSaveOff" text="Save (OFF)" />
                     </HBox>
                     <HBox prefHeight="-1.0" prefWidth="-1.0">
                         <!-- <Region minWidth="20"/>  spacer -->
-                        <Button mnemonicParsing="false" text="Save (spinput)" onAction="#doSaveSpinput"/>
+                        <Button mnemonicParsing="false" onAction="#doSaveSpinput" text="Save (spinput)" />
                         <ChoiceBox fx:id="atomicNumber">
-                            <String fx:value="1 H"/>
-                            <String fx:value="2 He"/>
-                            <String fx:value="6 C"/>
-                            <String fx:value="7 N"/>
-                            <String fx:value="8 O"/>
-                            <String fx:value="10 Ne"/>
-                            <String fx:value="14 Si"/>
-                            <String fx:value="16 S"/>
-                            <String fx:value="53 I"/>
-                            <String fx:value="54 Xe"/>
+                            <String fx:value="1 H" />
+                            <String fx:value="2 He" />
+                            <String fx:value="6 C" />
+                            <String fx:value="7 N" />
+                            <String fx:value="8 O" />
+                            <String fx:value="10 Ne" />
+                            <String fx:value="14 Si" />
+                            <String fx:value="16 S" />
+                            <String fx:value="53 I" />
+                            <String fx:value="54 Xe" />
                         </ChoiceBox>
-                        <Label text="Scale:"/>
-                        <TextField fx:id="scaleFactor" prefWidth="45"/>
+                        <Label text="Scale:" />
+                        <TextField fx:id="scaleFactor" prefWidth="45" />
                     </HBox>
                     <HBox>
-                         <Button mnemonicParsing="false" text="Undo" fx:id="buttonUndo" onAction="#doUndo"/>
-                        <Button mnemonicParsing="false" text="Redo" fx:id="buttonRedo" onAction="#doRedo"/>
-                        <Button mnemonicParsing="false" text="Undo step" fx:id="buttonUndoStep" onAction="#doUndoStep"/>
-                        <Button mnemonicParsing="false" text="Redo step" fx:id="buttonRedoStep" onAction="#doRedoStep"/>
+                         <Button fx:id="buttonUndo" mnemonicParsing="false" onAction="#doUndo" text="Undo" />
+                        <Button fx:id="buttonRedo" mnemonicParsing="false" onAction="#doRedo" text="Redo" />
+                        <Button fx:id="buttonUndoStep" mnemonicParsing="false" onAction="#doUndoStep" text="Undo step" />
+                        <Button fx:id="buttonRedoStep" mnemonicParsing="false" onAction="#doRedoStep" text="Redo step" />
                     </HBox>
                 </VBox>
             </TitledPane>
         </VBox>
     </left>
     <center>
-        <SimpleGraphView3D fx:id="view3D" BorderPane.alignment="CENTER"
-                           width="800" height="800" vertexRadius="8" edgeRadius="3">
+        <SimpleGraphView3D fx:id="view3D" edgeRadius="3" height="800" vertexRadius="8" width="800" BorderPane.alignment="CENTER">
         </SimpleGraphView3D>
     </center>
 </BorderPane>

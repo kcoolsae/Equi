@@ -63,6 +63,7 @@ public class DoubleAlt5 extends AbstractCombinatorialGroup {
         Perm g3inv = g3.inv();
         Perm g2 = g3inv.mul(g5.pow(3)).mul(g3).mul(g5.pow(2)).mul(g3inv);
         Perm g2prime = g2.conj(g5.inv());
+        Perm g2star = g2.conj(g3);
         return Arrays.asList(
                 this,
                 new Alt5(degree, g5, g3),
@@ -72,9 +73,19 @@ public class DoubleAlt5 extends AbstractCombinatorialGroup {
                 new Dih6(degree, g3.mul(i), g2prime),
                 new Z10(degree, g5i),
                 new Dih5(degree, g5, g2),
-                new Cubed2(degree, g2, i, g2.conj(g3)),
-                // TODO: missing Sym(3) 2.Sym(3) etc.
-                new Z5(degree, g5) // TODO: alternative Z5
+                new Dih5(degree, g5, g2.mul(i)),
+                new Cubed2(degree, g2, g2star, i),
+                new Z6(degree, g3.mul(i)),
+                new Sym3Ico(degree, g3, g2prime),
+                new Sym3Ico(degree, g3, g2prime.mul(i)),
+                new Z5(degree, g5),
+                new Squared2(degree, g2, g2star),
+                new Squared2(degree, g2, g2star.mul(i)),
+                new Squared2(degree, g2, i),
+                new Z3(degree, g3),
+                new Z2(degree, g2),
+                new Z2(degree, g2.mul(i)),
+                new Z2(degree, i)
         );
     }
 
