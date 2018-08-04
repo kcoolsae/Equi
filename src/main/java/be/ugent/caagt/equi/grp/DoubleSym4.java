@@ -103,10 +103,14 @@ public class DoubleSym4 extends AbstractCombinatorialGroup {
 
     @Override
     public Iterable<CombinedGroup> getPointGroups() {
-        return Collections.singleton(
+        return Arrays.asList(
                 new CombinedGroup("Oh", order, degree, Arrays.asList(
                         new ExtendedPerm(g3i, PointGroupElement.ROT_3.minus()),
                         new ExtendedPerm(g4, PointGroupElement.ROT_G4)
+                )),
+                new CombinedGroup("Oh", order, degree, Arrays.asList(
+                        new ExtendedPerm(g3i, PointGroupElement.ROT_3.minus()),
+                        new ExtendedPerm(g4, PointGroupElement.ROT_G4.minus())
                 ))
         );
     }

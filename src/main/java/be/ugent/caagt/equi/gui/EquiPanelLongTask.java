@@ -97,9 +97,10 @@ class EquiPanelLongTask extends Task<Void> implements StepListener {
         thread.start();
     }
 
+    @SuppressWarnings("deprecation")
     public void kill() {
         if (thread != null) {
-            //noinspection deprecation
+            // deprecated
             thread.stop(); // :-( I see no other solution except forking the jvm...
         }
     }

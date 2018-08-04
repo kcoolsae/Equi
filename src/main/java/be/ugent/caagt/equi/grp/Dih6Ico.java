@@ -34,18 +34,19 @@ import be.ugent.caagt.perm.Perm;
 import java.util.Arrays;
 
 /**
- * Dihedral group of order 12 with point group realizations that use a special rotation axis of order 3
+ * Dihedral group of order 12 with point group realizations that use a special reflection compatible with the
+ * icosahedral group
  */
-public class Dih6 extends AbstractCombinatorialGroup {
+public class Dih6Ico extends AbstractCombinatorialGroup {
 
     private Perm g3i;
 
-    private Perm r;
+    private Perm g2prime;
 
-    public Dih6(int degree, Perm g3i, Perm r) {
+    public Dih6Ico(int degree, Perm g3i, Perm g2prime) {
         super(12, degree);
         this.g3i = g3i;
-        this.r = r;
+        this.g2prime = g2prime;
     }
 
     @Override
@@ -59,8 +60,8 @@ public class Dih6 extends AbstractCombinatorialGroup {
         Perm g3 = g3i.mul(i);
         return Arrays.asList(
                 new Z6(degree, g3i),
-                new Sym3(degree, g3, r),
-                new Squared2(degree, r, i),
+                new Sym3Ico(degree, g3, g2prime),
+                new Squared2(degree, g2prime, i),
                 new Z3(degree, g3),
                 new Z2(degree, i)
         );
@@ -71,7 +72,7 @@ public class Dih6 extends AbstractCombinatorialGroup {
         return Arrays.asList(
            new CombinedGroup("D3d", order, degree, Arrays.asList(
                    new ExtendedPerm(g3i, PointGroupElement.ROT_3.minus()),
-                   new ExtendedPerm(r, PointGroupElement.REFLECT_R)
+                   new ExtendedPerm(g2prime, PointGroupElement.REFLECT_PHI)
            ))
         );
     }

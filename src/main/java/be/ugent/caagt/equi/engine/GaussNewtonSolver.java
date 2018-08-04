@@ -30,8 +30,8 @@
 package be.ugent.caagt.equi.engine;
 
 import be.ugent.caagt.equi.PlanarGraph;
-import org.ejml.data.DenseMatrix64F;
-import org.ejml.ops.CommonOps;
+import org.ejml.data.DMatrixRMaj;
+import org.ejml.dense.row.CommonOps_DDRM;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -274,22 +274,22 @@ public class GaussNewtonSolver {
      * Gauss Newton really happens.
      */
     private double[] computeDirection() {
-        DenseMatrix64F jacoMat = new DenseMatrix64F(jacobean);
+        DMatrixRMaj jacoMat = new DMatrixRMaj(jacobean);
 
         // J^T J (nrOfCo x nrOfCo)
-        DenseMatrix64F jacoSquare = new DenseMatrix64F(nrOfVariables, nrOfVariables);
-        CommonOps.multInner(jacoMat, jacoSquare);
+        DMatrixRMaj jacoSquare = new DMatrixRMaj(nrOfVariables, nrOfVariables);
+        CommonOps_DDRM.multInner(jacoMat, jacoSquare);
 
 
-        DenseMatrix64F fMat = new DenseMatrix64F(nrOfEquations, 1, true, values);
+        DMatrixRMaj fMat = new DMatrixRMaj(nrOfEquations, 1, true, values);
         // J^T value (nrOfCo x 1)
-        DenseMatrix64F rhs = new DenseMatrix64F(nrOfVariables, 1);
-        CommonOps.multTransA(jacoMat, fMat, rhs);
+        DMatrixRMaj rhs = new DMatrixRMaj(nrOfVariables, 1);
+        CommonOps_DDRM.multTransA(jacoMat, fMat, rhs);
 
         // result = (J^TJ)^-1 J^T value (nrOfCo x 1)
         // J^TJ result = J^T value
-        DenseMatrix64F result = new DenseMatrix64F(nrOfVariables, 1);
-        if (CommonOps.solve(jacoSquare, rhs, result)) {
+        DMatrixRMaj result = new DMatrixRMaj(nrOfVariables, 1);
+        if (CommonOps_DDRM.solve(jacoSquare, rhs, result)) {
             return result.getData();
         } else {
             return null;

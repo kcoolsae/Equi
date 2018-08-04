@@ -70,7 +70,7 @@ public class DoubleAlt5 extends AbstractCombinatorialGroup {
                 new DoubleAlt4(degree, g3.mul(i), g2),
                 new Alt4(degree, g3, g2),
                 new Dih10(degree,g5i,g2),
-                new Dih6(degree, g3.mul(i), g2prime),
+                new Dih6Ico(degree, g3.mul(i), g2prime),
                 new Z10(degree, g5i),
                 new Dih5(degree, g5, g2),
                 new Dih5(degree, g5, g2.mul(i)),
