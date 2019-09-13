@@ -258,7 +258,7 @@ public class GaussNewtonSolver {
     public double getAccuracy() {
         double total = 0.0;
         // orientation and position not important for line search
-        for (int i = 6; i < nrOfVariables; i++) {
+        for (int i = 6; i < nrOfEquations; i++) {
             total += values[i] * values[i];
         }
         return total;
