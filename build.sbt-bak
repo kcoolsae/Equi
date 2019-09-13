@@ -1,0 +1,34 @@
+name := "Equi"
+
+normalizedName := "equi"
+
+version := "1.0-SNAPSHOT"
+
+organization := "be.ugent.caagt"
+
+crossPaths := false
+
+libraryDependencies ++= Seq(
+  "be.ugent.caagt" % "perm" % "1.1-SNAPSHOT",
+  "be.ugent.caagt" % "fxlogwindow" % "1.0",
+  "be.ugent.caagt" % "graph3d" % "1.0",
+  "org.ejml" % "ejml-ddense" % "0.34"
+)
+
+autoScalaLibrary := false
+
+// taken from
+//  https://www.reddit.com/r/scala/comments/9fbzbk/build_file_snippet_for_using_javafx_with_java_11/
+
+libraryDependencies ++= Seq(
+  "org.openjfx" % "javafx-base" % "11" classifier "linux",
+  "org.openjfx" % "javafx-controls" % "11" classifier "linux",
+  "org.openjfx" % "javafx-fxml" % "11" classifier "linux",
+  "org.openjfx" % "javafx-graphics" % "11" classifier "linux"
+)
+
+Compile / javacOptions ++= Seq(
+  "--module", "be.ugent.caagt.equi",
+  "--module-path", "/usr/lib/jvm/javafx-sdk-11.0.1/lib",
+  "--add-modules", "javafx.controls,javafx.fxml,javafx.graphics"
+)
